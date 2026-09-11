@@ -6,7 +6,7 @@ import {
   type MyCertificateRequestView,
   type MyCertificateView,
   type PublicCertificateVerification,
-} from '@cpf-pdf/shared';
+} from '@cert-docs/shared';
 import { buildVerificationUrl } from '../../application/certificate-settings';
 import type {
   CertificateEntity,

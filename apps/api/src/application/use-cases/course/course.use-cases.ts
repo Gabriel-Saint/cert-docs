@@ -1,4 +1,7 @@
-import type { CreateCourseRequest, UpdateCourseRequest } from '@cpf-pdf/shared';
+import type {
+  CreateCourseRequest,
+  UpdateCourseRequest,
+} from '@cert-docs/shared';
 import {
   assertValidModules,
   type CourseEntity,

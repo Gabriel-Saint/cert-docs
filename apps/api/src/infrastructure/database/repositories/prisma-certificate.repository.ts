@@ -1,4 +1,4 @@
-import { CertificateStatus, type CertificateSnapshot } from '@cpf-pdf/shared';
+import { CertificateStatus, type CertificateSnapshot } from '@cert-docs/shared';
 import type {
   Certificate as CertificateRow,
   Prisma,

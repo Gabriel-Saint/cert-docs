@@ -1,4 +1,4 @@
-import type { Role } from '@cpf-pdf/shared';
+import type { Role } from '@cert-docs/shared';
 
 export interface TokenPayload {
   sub: string;

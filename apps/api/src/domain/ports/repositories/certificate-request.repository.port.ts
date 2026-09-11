@@ -1,4 +1,4 @@
-import type { CertificateRequestStatus } from '@cpf-pdf/shared';
+import type { CertificateRequestStatus } from '@cert-docs/shared';
 import type { CertificateRequestEntity } from '../../entities/certificate-request.entity';
 import type { Cpf } from '../../value-objects/cpf';
 

@@ -1,4 +1,4 @@
-# CPF PDF Watermark Generator
+# CertDocs
 
 Sistema para distribuir materiais restritos (apostilas, cursos) em PDF com o **CPF e o nome de quem baixou carimbados no cabeçalho e no rodapé de todas as páginas**. Se o arquivo vazar, dá para saber de onde veio — e cada download fica registrado.
 

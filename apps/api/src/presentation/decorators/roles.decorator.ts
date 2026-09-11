@@ -1,4 +1,4 @@
-import { Role } from '@cpf-pdf/shared';
+import { Role } from '@cert-docs/shared';
 import { applyDecorators, SetMetadata } from '@nestjs/common';
 import {
   ApiBearerAuth,

@@ -1,7 +1,7 @@
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: cpf-pdf-postgres
+    container_name: cert-docs-postgres
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -20,7 +20,7 @@ services:
     build:
       context: .
       dockerfile: apps/api/Dockerfile
-    container_name: cpf-pdf-api
+    container_name: cert-docs-api
     environment:
       # Dentro da rede do compose o host do banco é "postgres", não "localhost"
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}

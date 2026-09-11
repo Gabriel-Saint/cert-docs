@@ -1,4 +1,4 @@
-import type { UpdateDocumentRequest } from '@cpf-pdf/shared';
+import type { UpdateDocumentRequest } from '@cert-docs/shared';
 import type { DocumentEntity } from '../../../domain/entities/document.entity';
 import { DocumentNotFoundError } from '../../../domain/errors';
 import type { DocumentRepositoryPort } from '../../../domain/ports';

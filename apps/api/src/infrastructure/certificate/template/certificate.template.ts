@@ -1,4 +1,4 @@
-import { formatCpf } from '@cpf-pdf/shared';
+import { formatCpf } from '@cert-docs/shared';
 import type { CertificateRenderInput } from '../../../domain/ports';
 import { CERTIFICATE_TIME_ZONE } from '../../../domain/services/calendar';
 import { CERTIFICATE_STYLES } from './certificate.styles';

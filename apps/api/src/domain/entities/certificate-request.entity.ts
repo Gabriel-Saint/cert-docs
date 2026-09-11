@@ -1,4 +1,4 @@
-import type { CertificateRequestStatus } from '@cpf-pdf/shared';
+import type { CertificateRequestStatus } from '@cert-docs/shared';
 
 export interface CertificateRequestEntity {
   id: string;

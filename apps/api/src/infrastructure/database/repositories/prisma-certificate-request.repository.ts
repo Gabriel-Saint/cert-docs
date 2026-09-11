@@ -1,4 +1,4 @@
-import { CertificateRequestStatus } from '@cpf-pdf/shared';
+import { CertificateRequestStatus } from '@cert-docs/shared';
 import type {
   CertificateRequest as CertificateRequestRow,
   Prisma,

@@ -1,4 +1,4 @@
-import { Role } from '@cpf-pdf/shared';
+import { Role } from '@cert-docs/shared';
 import { JwtService } from '@nestjs/jwt';
 import fc from 'fast-check';
 import { BcryptHashAdapter } from './bcrypt-hash.adapter';

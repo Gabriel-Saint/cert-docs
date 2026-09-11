@@ -1,4 +1,4 @@
-import type { CertificateStatus } from '@cpf-pdf/shared';
+import type { CertificateStatus } from '@cert-docs/shared';
 import type {
   CertificateEntity,
   CertificateRecord,

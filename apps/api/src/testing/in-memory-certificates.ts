@@ -3,7 +3,7 @@
  * A unidade de trabalho em memória desfaz as alterações quando o trabalho falha,
  * imitando o rollback de uma transação real.
  */
-import { CertificateRequestStatus, CertificateStatus } from '@cpf-pdf/shared';
+import { CertificateRequestStatus, CertificateStatus } from '@cert-docs/shared';
 import type {
   CertificateEntity,
   CertificateRecord,

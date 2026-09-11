@@ -1,5 +1,5 @@
 # Build a partir da RAIZ do monorepo:
-#   docker build -f apps/api/Dockerfile -t cpf-pdf-api .
+#   docker build -f apps/api/Dockerfile -t cert-docs-api .
 
 # Mesma versão do npm usada para gerar o package-lock.json (campo "packageManager" do package.json).
 # A imagem node:22 vem com npm 10, que interpreta o lockfile do npm 11 de outro jeito e recusa o "npm ci".

@@ -1,7 +1,7 @@
 import {
   CertificateRequestStatus,
   type ApproveCertificateRequestBody,
-} from '@cpf-pdf/shared';
+} from '@cert-docs/shared';
 import type { CertificateEntity } from '../../../domain/entities/certificate.entity';
 import type { CertificateRequestEntity } from '../../../domain/entities/certificate-request.entity';
 import {

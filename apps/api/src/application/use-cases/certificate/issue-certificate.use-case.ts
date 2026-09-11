@@ -1,4 +1,4 @@
-import type { CertificateSnapshot } from '@cpf-pdf/shared';
+import type { CertificateSnapshot } from '@cert-docs/shared';
 import { workloadHours } from '../../../domain/entities/course.entity';
 import type { CertificateEntity } from '../../../domain/entities/certificate.entity';
 import {

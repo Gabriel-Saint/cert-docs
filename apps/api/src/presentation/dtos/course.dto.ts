@@ -3,7 +3,7 @@ import type {
   CourseView,
   CreateCourseRequest,
   UpdateCourseRequest,
-} from '@cpf-pdf/shared';
+} from '@cert-docs/shared';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
 import {

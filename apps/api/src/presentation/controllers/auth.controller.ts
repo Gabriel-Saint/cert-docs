@@ -1,4 +1,4 @@
-import type { LoginResponse, PublicUser } from '@cpf-pdf/shared';
+import type { LoginResponse, PublicUser } from '@cert-docs/shared';
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import {
   ApiBadRequestResponse,

@@ -1,7 +1,7 @@
 import type {
   CreateDocumentRequest,
   UpdateDocumentRequest,
-} from '@cpf-pdf/shared';
+} from '@cert-docs/shared';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 

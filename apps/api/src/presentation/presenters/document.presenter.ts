@@ -1,4 +1,4 @@
-import type { DocumentDetail, DocumentSummary } from '@cpf-pdf/shared';
+import type { DocumentDetail, DocumentSummary } from '@cert-docs/shared';
 import type { DocumentEntity } from '../../domain/entities/document.entity';
 
 export function toDocumentSummary(document: DocumentEntity): DocumentSummary {

@@ -1,4 +1,4 @@
-import { Role, type UserListItem } from '@cpf-pdf/shared';
+import { Role, type UserListItem } from '@cert-docs/shared';
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ListUsersUseCase } from '../../application/use-cases/user/list-users.use-case';

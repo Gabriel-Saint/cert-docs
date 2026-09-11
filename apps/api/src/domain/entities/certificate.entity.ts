@@ -1,4 +1,4 @@
-import type { CertificateSnapshot, CertificateStatus } from '@cpf-pdf/shared';
+import type { CertificateSnapshot, CertificateStatus } from '@cert-docs/shared';
 
 export interface CertificateEntity {
   id: string;

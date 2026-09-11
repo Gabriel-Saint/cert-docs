@@ -14,10 +14,10 @@ Todas as rotas da API ficam sob o prefixo `/api` (ex.: `POST /api/auth/login`). 
 
 ## Glossary
 
-- **System**: O sistema completo cpf-pdf-watermark-generator (web + api).
+- **System**: O sistema completo CertDocs (web + api).
 - **Backend**: A aplicação NestJS em `apps/api`, com arquitetura hexagonal.
 - **Frontend**: A aplicação Angular 21 em `apps/web`, com Standalone Components, Signals e Angular Material.
-- **Shared_Lib**: A biblioteca `libs/shared` (alias `@cpf-pdf/shared`), importada pelo Backend e pelo Frontend.
+- **Shared_Lib**: A biblioteca `libs/shared` (alias `@cert-docs/shared`), importada pelo Backend e pelo Frontend.
 - **CPF_Validator**: O Value Object `Cpf` do domínio, apoiado nas funções puras de CPF da Shared_Lib.
 - **PDF_Generator**: O adaptador `PdfKitGeneratorAdapter` que implementa `PdfGeneratorPort` e produz buffers PDF.
 - **Auth_Service**: O conjunto de casos de uso de autenticação (`RegisterUserUseCase`, `AuthenticateUserUseCase`).

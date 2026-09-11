@@ -2,7 +2,7 @@ import {
   Role,
   type DocumentDetail,
   type DocumentSummary,
-} from '@cpf-pdf/shared';
+} from '@cert-docs/shared';
 import {
   Body,
   Controller,

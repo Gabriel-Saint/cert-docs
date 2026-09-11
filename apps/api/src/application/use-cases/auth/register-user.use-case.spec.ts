@@ -1,4 +1,4 @@
-import { Role } from '@cpf-pdf/shared';
+import { Role } from '@cert-docs/shared';
 import fc from 'fast-check';
 import {
   EmailOrCpfAlreadyInUseError,

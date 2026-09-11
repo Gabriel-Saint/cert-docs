@@ -3,7 +3,7 @@ import {
   type MyCertificateRequestView,
   type MyCertificateView,
   Role,
-} from '@cpf-pdf/shared';
+} from '@cert-docs/shared';
 import {
   Body,
   Controller,

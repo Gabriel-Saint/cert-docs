@@ -26,7 +26,7 @@ O plano é organizado em **fatias verticais**: cada fatia entrega uma funcionali
   - [x] 1.2 Criar workspace Nx
     - `npx create-nx-workspace@latest` (npm), conferir na documentação do Nx a compatibilidade da versão com Angular 21
     - Gerar `apps/web` (Angular, SCSS, Vitest), `apps/api` (NestJS, Jest) e `libs/shared` (lib TypeScript pura, Vitest, sem dependências)
-    - Confirmar o alias `@cpf-pdf/shared` no `tsconfig.base.json`
+    - Confirmar o alias `@cert-docs/shared` no `tsconfig.base.json`
     - Em `apps/api/tsconfig.app.json`, definir `"lib": ["ES2022"]` (sem `DOM`)
     - Garantir que `nx run-many -t lint test build` passa no projeto vazio
     - _Commit: `chore: scaffold nx workspace with web, api and shared`_

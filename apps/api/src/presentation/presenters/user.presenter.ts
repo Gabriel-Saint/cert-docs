@@ -1,4 +1,4 @@
-import type { PublicUser, UserListItem } from '@cpf-pdf/shared';
+import type { PublicUser, UserListItem } from '@cert-docs/shared';
 import type { UserEntity } from '../../domain/entities/user.entity';
 
 /** Nunca expõe passwordHash. */

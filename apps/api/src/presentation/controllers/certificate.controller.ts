@@ -4,7 +4,7 @@ import {
   type MyCertificateView,
   type Page,
   Role,
-} from '@cpf-pdf/shared';
+} from '@cert-docs/shared';
 import {
   Body,
   Controller,

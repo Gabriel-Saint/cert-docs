@@ -2,7 +2,7 @@
  * Fluxo HTTP completo (guards, pipes, filtro de erros e controllers) com os
  * repositórios em memória no lugar do Prisma — não precisa de banco.
  */
-import { Role } from '@cpf-pdf/shared';
+import { Role } from '@cert-docs/shared';
 import type { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import fc from 'fast-check';

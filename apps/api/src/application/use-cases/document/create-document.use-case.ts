@@ -1,4 +1,4 @@
-import type { CreateDocumentRequest } from '@cpf-pdf/shared';
+import type { CreateDocumentRequest } from '@cert-docs/shared';
 import type { DocumentEntity } from '../../../domain/entities/document.entity';
 import type { DocumentRepositoryPort } from '../../../domain/ports';
 

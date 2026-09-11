@@ -4,7 +4,7 @@ import {
   maskCpf,
   normalizeCpf,
   partialCpf,
-} from '@cpf-pdf/shared';
+} from '@cert-docs/shared';
 import { InvalidCpfError } from '../errors';
 
 export class Cpf {

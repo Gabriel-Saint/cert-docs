@@ -13,7 +13,7 @@ import {
   type MyCertificateView,
   type PublicCertificateVerification,
   type ReasonBody,
-} from '@cpf-pdf/shared';
+} from '@cert-docs/shared';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
 import {

@@ -2,7 +2,7 @@
  * Fluxo HTTP completo de certificados (guards, pipes, filtro de erros, upload e throttler)
  * com repositórios, storage e renderer em memória — sem banco e sem Chromium.
  */
-import { Role } from '@cpf-pdf/shared';
+import { Role } from '@cert-docs/shared';
 import type { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import request from 'supertest';

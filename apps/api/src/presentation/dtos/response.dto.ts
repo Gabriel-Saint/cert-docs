@@ -9,7 +9,7 @@ import {
   type PublicUser,
   Role,
   type UserListItem,
-} from '@cpf-pdf/shared';
+} from '@cert-docs/shared';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class PublicUserDto implements PublicUser {

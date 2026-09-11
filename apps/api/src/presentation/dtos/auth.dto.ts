@@ -1,4 +1,4 @@
-import type { LoginRequest, RegisterRequest } from '@cpf-pdf/shared';
+import type { LoginRequest, RegisterRequest } from '@cert-docs/shared';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {

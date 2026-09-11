@@ -1,4 +1,4 @@
-import { type CourseView, Role } from '@cpf-pdf/shared';
+import { type CourseView, Role } from '@cert-docs/shared';
 import {
   Body,
   Controller,

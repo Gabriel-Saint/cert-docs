@@ -1,7 +1,7 @@
 import type {
   FileCheckResult,
   PublicCertificateVerification,
-} from '@cpf-pdf/shared';
+} from '@cert-docs/shared';
 import {
   BadRequestException,
   Controller,

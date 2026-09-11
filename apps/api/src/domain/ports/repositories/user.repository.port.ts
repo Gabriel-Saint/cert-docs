@@ -1,4 +1,4 @@
-import type { Role } from '@cpf-pdf/shared';
+import type { Role } from '@cert-docs/shared';
 import type { UserEntity } from '../../entities/user.entity';
 import type { Cpf } from '../../value-objects/cpf';
 

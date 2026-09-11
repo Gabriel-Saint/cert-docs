@@ -1,4 +1,4 @@
-import { Role, type RegisterRequest } from '@cpf-pdf/shared';
+import { Role, type RegisterRequest } from '@cert-docs/shared';
 import type { UserEntity } from '../../../domain/entities/user.entity';
 import { EmailOrCpfAlreadyInUseError } from '../../../domain/errors';
 import type { HashPort, UserRepositoryPort } from '../../../domain/ports';

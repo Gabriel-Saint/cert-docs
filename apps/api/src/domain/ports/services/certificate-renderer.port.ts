@@ -1,4 +1,4 @@
-import type { CertificateSnapshot } from '@cpf-pdf/shared';
+import type { CertificateSnapshot } from '@cert-docs/shared';
 
 export interface CertificateRenderInput {
   snapshot: CertificateSnapshot;

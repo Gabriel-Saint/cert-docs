@@ -26,7 +26,7 @@ Sistema web para geração de PDFs personalizados com o CPF do usuário inserido
 ### Estrutura do Monorepo Nx
 
 ```
-cpf-pdf-watermark-generator/          <- raiz do repositório / workspace Nx
+cert-docs/                            <- raiz do repositório / workspace Nx
 ├── apps/
 │   ├── web/                          <- Angular 21
 │   │   ├── proxy.conf.json           <- /api -> http://localhost:3000 (dev)
@@ -40,7 +40,7 @@ cpf-pdf-watermark-generator/          <- raiz do repositório / workspace Nx
 │       ├── prisma.config.ts
 │       └── Dockerfile
 ├── libs/
-│   └── shared/                       <- @cpf-pdf/shared (sem dependências externas)
+│   └── shared/                       <- @cert-docs/shared (sem dependências externas)
 ├── docker-compose.yml
 ├── .env.example
 ├── nx.json
@@ -466,7 +466,7 @@ export interface TokenPort {
 
 ```typescript
 // domain/value-objects/cpf.ts
-import { formatCpf, isValidCpf, maskCpf, normalizeCpf, partialCpf } from '@cpf-pdf/shared';
+import { formatCpf, isValidCpf, maskCpf, normalizeCpf, partialCpf } from '@cert-docs/shared';
 import { InvalidCpfError } from '../errors';
 
 export class Cpf {

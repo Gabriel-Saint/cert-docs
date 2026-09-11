@@ -2,7 +2,7 @@ import {
   CertificateRequestStatus,
   CertificateStatus,
   Role,
-} from '@cpf-pdf/shared';
+} from '@cert-docs/shared';
 import fc from 'fast-check';
 import {
   CertificateAlreadyRequestedError,

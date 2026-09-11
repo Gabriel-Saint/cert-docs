@@ -1,4 +1,4 @@
-import type { CertificateSnapshot } from '@cpf-pdf/shared';
+import type { CertificateSnapshot } from '@cert-docs/shared';
 import type { VerificationCode } from '../domain/value-objects/verification-code';
 
 /** Configuração fixa usada na emissão (vem das variáveis de ambiente). */

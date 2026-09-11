@@ -2,7 +2,7 @@
  * Implementações em memória dos ports, usadas nos testes.
  * Permitem testar casos de uso e o fluxo HTTP sem banco de dados.
  */
-import { Role } from '@cpf-pdf/shared';
+import { Role } from '@cert-docs/shared';
 import { DocumentEntity } from '../domain/entities/document.entity';
 import { UserEntity } from '../domain/entities/user.entity';
 import { EmailOrCpfAlreadyInUseError } from '../domain/errors';

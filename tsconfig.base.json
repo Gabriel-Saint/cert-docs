@@ -16,7 +16,7 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "es2022",
-    "customConditions": ["@cpf-pdf/source"],
+    "customConditions": ["@cert-docs/source"],
     "noUncheckedSideEffectImports": false,
     "types": ["*"]
   }

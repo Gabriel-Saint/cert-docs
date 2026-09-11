@@ -1,4 +1,4 @@
-import type { LoginRequest, LoginResponse } from '@cpf-pdf/shared';
+import type { LoginRequest, LoginResponse } from '@cert-docs/shared';
 import { InvalidCredentialsError } from '../../../domain/errors';
 import type {
   HashPort,

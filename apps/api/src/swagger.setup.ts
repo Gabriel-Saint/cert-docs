@@ -24,7 +24,7 @@ Erros de validação do body retornam \`message\` como lista de campos inválido
 /** Precisa ser chamado depois do setGlobalPrefix, para as rotas saírem com o prefixo /api. */
 export function setupSwagger(app: INestApplication): void {
   const config = new DocumentBuilder()
-    .setTitle('CPF PDF Watermark API')
+    .setTitle('CertDocs API')
     .setDescription(DESCRIPTION)
     .setVersion('1.0.0')
     .addBearerAuth(
@@ -57,7 +57,7 @@ export function setupSwagger(app: INestApplication): void {
   const document = SwaggerModule.createDocument(app, config);
 
   SwaggerModule.setup(SWAGGER_PATH, app, document, {
-    customSiteTitle: 'CPF PDF API — Documentação',
+    customSiteTitle: 'CertDocs — Documentação da API',
     swaggerOptions: {
       // Mantém o token após recarregar a página
       persistAuthorization: true,

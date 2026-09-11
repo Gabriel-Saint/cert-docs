@@ -2,7 +2,7 @@ import {
   CertificateStatus,
   Role,
   type CertificateHistoryQuery,
-} from '@cpf-pdf/shared';
+} from '@cert-docs/shared';
 import type {
   CertificateEntity,
   CertificateRecord,

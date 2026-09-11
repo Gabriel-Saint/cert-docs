@@ -1,4 +1,4 @@
-import type { CourseView } from '@cpf-pdf/shared';
+import type { CourseView } from '@cert-docs/shared';
 import {
   type CourseEntity,
   workloadHours,

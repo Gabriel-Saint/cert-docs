@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Emissão de certificados de conclusão de curso com **código único de verificação, QR Code e hash**, no mesmo sistema do cpf-pdf-watermark-generator. Enquanto a v1 responde "quem vazou este documento?", esta feature responde "este certificado é autêntico?".
+Emissão de certificados de conclusão de curso com **código único de verificação, QR Code e hash**, no mesmo sistema (CertDocs). Enquanto a v1 responde "quem vazou este documento?", esta feature responde "este certificado é autêntico?".
 
 O aluno solicita o certificado de um curso, o ADMIN aprova (emitindo) ou recusa, e qualquer pessoa pode verificar a autenticidade em uma página pública, sem login. O certificado tem **um único modelo visual**, no estilo de diploma universitário, gerado como **PDF vetorial** a partir de um template HTML/CSS renderizado por Chromium sem interface (headless).
 
