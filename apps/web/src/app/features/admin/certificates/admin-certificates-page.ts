@@ -4,14 +4,16 @@ import {
   Component,
   computed,
   inject,
+  linkedSignal,
   signal,
 } from '@angular/core';
-import { rxResource } from '@angular/core/rxjs-interop';
+import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import type {
   CertificateHistoryItem,
   CertificateHistoryQuery,
   CertificateStatus,
+  Page,
 } from '@cert-docs/shared';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
@@ -27,7 +29,16 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { filter, switchMap } from 'rxjs';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  map,
+  merge,
+  skip,
+  startWith,
+  switchMap,
+} from 'rxjs';
 import { toApiError } from '../../../core/api/api-error';
 import { CertificatesApi } from '../../../data-access/certificates-api';
 import { CERTIFICATE_STATUS_LABEL } from '../../../shared/ui/labels';
@@ -40,6 +51,30 @@ import { StateMessage } from '../../../shared/ui/state-message';
 import { CertificateDetailDialog } from './certificate-detail-dialog';
 
 const DEFAULT_PAGE_SIZE = 20;
+/** Espera o usuário parar de digitar antes de consultar a API. */
+export const SEARCH_DEBOUNCE_MS = 300;
+
+type HistoryFilters = Pick<
+  CertificateHistoryQuery,
+  'q' | 'status' | 'from' | 'to'
+>;
+
+function toHistoryFilters(value: {
+  q: string;
+  status: CertificateStatus | '';
+  from: string;
+  to: string;
+}): HistoryFilters {
+  return {
+    q: value.q.trim() || undefined,
+    status: value.status || undefined,
+    from: value.from || undefined,
+    to: value.to || undefined,
+  };
+}
+
+const sameFilters = (a: HistoryFilters, b: HistoryFilters): boolean =>
+  a.q === b.q && a.status === b.status && a.from === b.from && a.to === b.to;
 
 @Component({
   selector: 'app-admin-certificates-page',
@@ -65,10 +100,17 @@ const DEFAULT_PAGE_SIZE = 20;
         <h1>Certificados emitidos</h1>
       </header>
 
-      <form class="filters" [formGroup]="filters" (ngSubmit)="applyFilters()">
+      <form class="filters" [formGroup]="filters">
         <mat-form-field>
           <mat-label>Aluno ou código</mat-label>
-          <input matInput id="history-q" formControlName="q" />
+          <mat-icon matPrefix>search</mat-icon>
+          <input
+            matInput
+            id="history-q"
+            formControlName="q"
+            maxlength="100"
+            autocomplete="off"
+          />
         </mat-form-field>
         <mat-form-field>
           <mat-label>Status</mat-label>
@@ -91,12 +133,14 @@ const DEFAULT_PAGE_SIZE = 20;
           <mat-label>até</mat-label>
           <input matInput id="history-to" type="date" formControlName="to" />
         </mat-form-field>
-        <div class="filter-actions">
-          <button mat-flat-button type="submit">Filtrar</button>
-          <button mat-button type="button" (click)="clearFilters()">
-            Limpar
-          </button>
-        </div>
+        @if (hasFilters()) {
+          <div class="filter-actions">
+            <button mat-button type="button" (click)="clearFilters()">
+              <mat-icon>filter_alt_off</mat-icon>
+              Limpar filtros
+            </button>
+          </div>
+        }
       </form>
 
       @if (history.isLoading() || busyId()) {
@@ -112,15 +156,15 @@ const DEFAULT_PAGE_SIZE = 20;
           actionLabel="Tentar novamente"
           (action)="history.reload()"
         />
-      } @else if (history.hasValue()) {
-        @if (history.value().total === 0) {
+      } @else if (page(); as current) {
+        @if (current.total === 0) {
           <app-state-message
             icon="history_edu"
             title="Nenhum certificado encontrado"
           />
         } @else {
           <div class="table-scroll">
-            <table mat-table [dataSource]="history.value().items">
+            <table mat-table [dataSource]="current.items">
               <ng-container matColumnDef="code">
                 <th mat-header-cell *matHeaderCellDef>Código / registro</th>
                 <td mat-cell *matCellDef="let row">
@@ -202,7 +246,7 @@ const DEFAULT_PAGE_SIZE = 20;
             </table>
           </div>
           <mat-paginator
-            [length]="history.value().total"
+            [length]="current.total"
             [pageIndex]="(query().page ?? 1) - 1"
             [pageSize]="query().pageSize ?? defaultPageSize"
             [pageSizeOptions]="[10, 20, 50, 100]"
@@ -225,7 +269,7 @@ const DEFAULT_PAGE_SIZE = 20;
       padding-top: 8px;
     }
     .mono {
-      font-family: 'Roboto Mono', monospace;
+      font-family: var(--app-font-mono);
     }
     .actions {
       white-space: nowrap;
@@ -269,25 +313,51 @@ export class AdminCertificatesPage {
     stream: ({ params }) => this.api.history(params),
   });
 
+  /** Mantém a última página na tela enquanto a próxima busca carrega, para a tabela não piscar a cada tecla. */
+  protected readonly page = linkedSignal<
+    Page<CertificateHistoryItem> | undefined,
+    Page<CertificateHistoryItem> | undefined
+  >({
+    source: () => (this.history.hasValue() ? this.history.value() : undefined),
+    computation: (next, previous) => next ?? previous?.value,
+  });
+
+  protected readonly hasFilters = computed(() => {
+    const { q, status, from, to } = this.query();
+    return Boolean(q || status || from || to);
+  });
+
   protected readonly errorMessage = computed(
     () => toApiError(unwrapResourceError(this.history.error())).message,
   );
 
-  protected applyFilters(): void {
-    const { q, status, from, to } = this.filters.getRawValue();
-    this.query.update((current) => ({
-      pageSize: current.pageSize,
-      page: 1,
-      q: q || undefined,
-      status: status || undefined,
-      from: from || undefined,
-      to: to || undefined,
-    }));
+  constructor() {
+    // Texto espera a pausa na digitação; status e datas filtram na hora
+    const { q, status, from, to } = this.filters.controls;
+    merge(
+      q.valueChanges.pipe(debounceTime(SEARCH_DEBOUNCE_MS)),
+      status.valueChanges,
+      from.valueChanges,
+      to.valueChanges,
+    )
+      .pipe(
+        map(() => toHistoryFilters(this.filters.getRawValue())),
+        startWith(toHistoryFilters(this.filters.getRawValue())),
+        distinctUntilChanged(sameFilters),
+        skip(1),
+        takeUntilDestroyed(),
+      )
+      .subscribe((filters) =>
+        this.query.update((current) => ({
+          pageSize: current.pageSize,
+          page: 1,
+          ...filters,
+        })),
+      );
   }
 
   protected clearFilters(): void {
     this.filters.reset();
-    this.query.update((current) => ({ page: 1, pageSize: current.pageSize }));
   }
 
   protected onPage(event: PageEvent): void {
