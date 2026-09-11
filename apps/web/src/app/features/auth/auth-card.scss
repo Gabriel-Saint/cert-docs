@@ -1,0 +1,44 @@
+:host {
+  display: grid;
+  place-items: center;
+  min-height: 100%;
+  padding: 24px 16px;
+  box-sizing: border-box;
+}
+
+.card {
+  width: 100%;
+  max-width: 420px;
+}
+
+.brand {
+  margin: 0 0 4px;
+  font: var(--mat-sys-title-medium);
+  color: var(--mat-sys-primary);
+}
+
+h1 {
+  margin: 0;
+  font: var(--mat-sys-headline-small);
+}
+
+form {
+  display: grid;
+  gap: 4px;
+  margin-top: 16px;
+}
+
+.error {
+  margin: 0 0 8px;
+  color: var(--mat-sys-error);
+}
+
+.submit {
+  min-height: 44px;
+  margin-top: 8px;
+}
+
+.footer {
+  margin: 16px 0 0;
+  text-align: center;
+}
