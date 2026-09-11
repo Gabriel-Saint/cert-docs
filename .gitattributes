@@ -1,0 +1,6 @@
+# Normaliza finais de linha para LF (evita quebrar scripts em Docker/CI no Windows)
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.pdf binary
