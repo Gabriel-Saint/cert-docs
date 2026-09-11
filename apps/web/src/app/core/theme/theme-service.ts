@@ -5,7 +5,12 @@ export type ThemePreference = 'light' | 'dark' | 'system';
 
 export const THEME_STORAGE_KEY = 'cert-docs.theme';
 
-/** Classes no <html> que fixam o color-scheme; sem nenhuma, vale o tema do sistema. */
+/**
+ * Classes no <html> que fixam o color-scheme; sem nenhuma, vale o tema do sistema.
+ * O script inline do index.html aplica a mesma classe antes do Angular carregar, para não
+ * piscar o tema errado. O comentário fica aqui porque o build copia o index.html como está,
+ * enquanto os comentários de TS, templates e SCSS são removidos.
+ */
 const THEME_CLASS = { light: 'theme-light', dark: 'theme-dark' } as const;
 
 function readStoredPreference(): ThemePreference {
