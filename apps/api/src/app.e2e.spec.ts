@@ -17,6 +17,7 @@ import {
   DOWNLOAD_LOG_REPOSITORY,
   USER_REPOSITORY,
 } from './modules/tokens';
+import { setupSwagger, SWAGGER_BEARER_AUTH } from './swagger.setup';
 import {
   InMemoryDocumentRepository,
   InMemoryDownloadLogRepository,
@@ -60,6 +61,7 @@ describe('API (e2e)', () => {
     app = configureApp(
       moduleRef.createNestApplication(),
     ) as INestApplication<App>;
+    setupSwagger(app);
     await app.init();
 
     await request(app.getHttpServer())
@@ -87,6 +89,44 @@ describe('API (e2e)', () => {
       .post('/api/auth/login')
       .send({ email, password });
   }
+
+  describe('documentação (Swagger)', () => {
+    it('publica a especificação OpenAPI com todas as rotas e o esquema JWT', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/api/docs-json')
+        .expect(200);
+
+      const spec = response.body as {
+        paths: Record<string, Record<string, { security?: unknown[] }>>;
+        components: { securitySchemes: Record<string, unknown> };
+      };
+
+      expect(Object.keys(spec.paths).sort()).toEqual([
+        '/api/auth/login',
+        '/api/auth/register',
+        '/api/documents',
+        '/api/documents/{id}',
+        '/api/documents/{id}/pdf',
+        '/api/users',
+      ]);
+      expect(spec.components.securitySchemes).toHaveProperty(
+        SWAGGER_BEARER_AUTH,
+      );
+      // rotas protegidas exigem o token; login e cadastro não
+      expect(spec.paths['/api/users']['get'].security).toEqual([
+        { [SWAGGER_BEARER_AUTH]: [] },
+      ]);
+      expect(spec.paths['/api/auth/login']['post'].security).toBeUndefined();
+    });
+
+    it('serve a interface do Swagger', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/api/docs')
+        .expect(200);
+
+      expect(response.text).toContain('swagger-ui');
+    });
+  });
 
   describe('auth', () => {
     it('registro não expõe passwordHash', async () => {
