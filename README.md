@@ -2,7 +2,7 @@
 
 Sistema para distribuir materiais restritos (apostilas, cursos) em PDF com o **CPF e o nome de quem baixou carimbados no cabeçalho e no rodapé de todas as páginas**. Se o arquivo vazar, dá para saber de onde veio — e cada download fica registrado.
 
-> **Status:** backend (API) completo · frontend Angular em desenvolvimento
+> **Status:** API completa (documentos com CPF carimbado e emissão de certificados) · frontend Angular em desenvolvimento
 
 ## Planejamento
 
@@ -14,18 +14,20 @@ O projeto foi planejado com **spec-driven development** usando o [Kiro](https://
 
 Os testes baseados em propriedades (fast-check) implementam diretamente as _correctness properties_ definidas no design.
 
+**Segunda feature:** [emissão de certificados](.kiro/specs/certificate-issuance/requirements.md) no estilo diploma, com código de verificação, QR Code, hash e página pública de verificação — especificada com o mesmo processo e já implementada na API.
+
 ## Stack
 
-| Camada   | Tecnologia                                             |
-| -------- | ------------------------------------------------------ |
-| Monorepo | Nx 23 (npm workspaces + TypeScript project references) |
-| API      | NestJS 11 · arquitetura hexagonal                      |
-| Banco    | PostgreSQL 16 · Prisma 7 (driver adapter `pg`)         |
-| PDF      | PDFKit                                                 |
-| Auth     | JWT (Passport) · bcrypt · controle de acesso por roles |
-| Testes   | Jest · fast-check (property-based) · Supertest         |
-| Infra    | Docker (multi-stage) · Docker Compose                  |
-| Frontend | Angular 22 · standalone · zoneless · signals · Vitest  |
+| Camada   | Tecnologia                                                 |
+| -------- | ---------------------------------------------------------- |
+| Monorepo | Nx 23 (npm workspaces + TypeScript project references)     |
+| API      | NestJS 11 · arquitetura hexagonal                          |
+| Banco    | PostgreSQL 16 · Prisma 7 (driver adapter `pg`)             |
+| PDF      | PDFKit (documentos) · Playwright + Chromium (certificados) |
+| Auth     | JWT (Passport) · bcrypt · controle de acesso por roles     |
+| Testes   | Jest · fast-check (property-based) · Supertest             |
+| Infra    | Docker (multi-stage) · Docker Compose                      |
+| Frontend | Angular 22 · standalone · zoneless · signals · Vitest      |
 
 ## Estrutura
 
@@ -111,11 +113,38 @@ Erros de negócio seguem um formato único:
 }
 ```
 
+## Certificados
+
+Fluxo: o aluno **solicita** o certificado de um curso → o ADMIN **aprova** (emite) ou recusa com motivo → o aluno **baixa** o PDF → qualquer pessoa **verifica** pelo código ou QR Code, sem login.
+
+- **Modelo estilo diploma**, frente e verso: moldura guilloché, selo dourado com fitas, nome em caligrafia, assinaturas, registro nº/livro/folha e conteúdo programático.
+- **PDF 100% vetorial**: template HTML/CSS impresso por um Chromium sem interface (Playwright). Todos os ornamentos e o QR Code são SVG e as fontes vão embutidas no arquivo — sem imagens, texto selecionável e nítido em qualquer zoom.
+- **Código de verificação** aleatório de 60 bits (`CERT-7K3F-9QX2-M8PD`, alfabeto sem letras ambíguas), **registro sequencial por ano** e **dois hashes**: o dos dados (impresso no verso) e o do arquivo (guardado para detectar PDF editado).
+- **Snapshot**: os dados são congelados na emissão; mudar o nome do aluno ou do curso depois não altera o certificado.
+- **Revogação** com motivo: o certificado continua no histórico e a verificação pública passa a mostrar "revogado".
+
+| Método                | Rota                                            | Acesso      | Descrição                             |
+| --------------------- | ----------------------------------------------- | ----------- | ------------------------------------- |
+| GET                   | `/courses`                                      | USER, ADMIN | Cursos ativos com módulos             |
+| POST · PATCH · DELETE | `/courses`                                      | ADMIN       | Cadastro de cursos                    |
+| POST                  | `/certificate-requests`                         | USER, ADMIN | Solicita certificado                  |
+| GET                   | `/me/certificate-requests` · `/me/certificates` | USER, ADMIN | Meus pedidos e certificados           |
+| GET                   | `/certificate-requests?status=`                 | ADMIN       | Fila de pedidos                       |
+| POST                  | `/certificate-requests/:id/approve` · `/reject` | ADMIN       | Aprova (emite) ou recusa              |
+| GET                   | `/certificates` · `/certificates/:id`           | ADMIN       | Histórico com filtros e detalhe       |
+| GET                   | `/certificates/:id/pdf`                         | dono, ADMIN | Baixa o PDF                           |
+| POST                  | `/certificates/:id/revoke`                      | ADMIN       | Revoga com motivo                     |
+| GET                   | `/public/certificates/:code`                    | público     | Verificação (30 req/min por IP)       |
+| POST                  | `/public/certificates/:code/file-check`         | público     | Confere se o PDF enviado é o original |
+
+Para gerar certificados rodando a API fora do Docker, baixe o Chromium uma vez: `npx playwright install --only-shell chromium`.
+
 ## Testes
 
 ```bash
-npm test          # unitários, property-based e e2e
-npm run ci        # lint + typecheck + testes + build
+npm test                          # unitários, property-based e e2e (sem banco nem navegador)
+npx nx run api:test-integration   # Chromium real gerando PDF + Postgres (concorrência do registro)
+npm run ci                        # lint + typecheck + testes + build
 ```
 
 - **Property-based (fast-check):** validação de CPF comparada com um oráculo independente, unicidade de email/CPF, isolamento de roles, listagem só de ativos, carimbo em todas as páginas do PDF.
