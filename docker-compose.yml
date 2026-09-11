@@ -26,11 +26,22 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       JWT_SECRET: ${JWT_SECRET}
       PORT: 3000
+      PUBLIC_WEB_URL: ${PUBLIC_WEB_URL:-http://localhost:4200}
+      INSTITUTION_NAME: ${INSTITUTION_NAME}
+      INSTITUTION_CITY: ${INSTITUTION_CITY}
+      INSTITUTION_DIRECTOR: ${INSTITUTION_DIRECTOR}
+      INSTITUTION_DIRECTOR_ROLE: ${INSTITUTION_DIRECTOR_ROLE}
     ports:
       - '3000:3000'
+    volumes:
+      # PDFs emitidos: sobrevivem a rebuilds e recriação do container
+      - certificates:/data/certificates
+    # O Chromium usa memória compartilhada; o padrão de 64 MB do Docker é pouco
+    shm_size: 256mb
     depends_on:
       postgres:
         condition: service_healthy
 
 volumes:
   pgdata:
+  certificates:
