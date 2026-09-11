@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
+  input,
   signal,
 } from '@angular/core';
 import {
@@ -31,7 +32,9 @@ import { PublicHeader } from '../../layout/public-header';
     MatIconModule,
   ],
   template: `
-    <app-public-header />
+    @if (publicLayout()) {
+      <app-public-header />
+    }
     <section class="page narrow">
       <header>
         <h1>Verificar certificado</h1>
@@ -93,6 +96,8 @@ import { PublicHeader } from '../../layout/public-header';
 })
 export class VerifySearchPage {
   private readonly router = inject(Router);
+  /** Visitantes veem o cabeçalho público; logados abrem a página dentro do menu. */
+  readonly publicLayout = input(false);
   protected readonly invalidCode = signal(false);
   protected readonly form = inject(NonNullableFormBuilder).group({
     code: ['', Validators.required],

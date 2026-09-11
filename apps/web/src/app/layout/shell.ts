@@ -145,7 +145,14 @@ const ADMIN_NAV: NavItem[] = [
             }
           }
           <h3 matSubheader>Público</h3>
-          <a mat-list-item routerLink="/verificar" (click)="closeOnHandset()">
+          <a
+            mat-list-item
+            routerLink="/verificar"
+            routerLinkActive="active"
+            #verifyLink="routerLinkActive"
+            [activated]="verifyLink.isActive"
+            (click)="closeOnHandset()"
+          >
             <mat-icon matListItemIcon>verified</mat-icon>
             <span matListItemTitle>Verificar certificado</span>
           </a>

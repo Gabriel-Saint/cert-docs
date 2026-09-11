@@ -1,3 +1,4 @@
+import { inject } from '@angular/core';
 import type { Route } from '@angular/router';
 import { Role } from '@cert-docs/shared';
 import {
@@ -6,6 +7,20 @@ import {
   HOME_ROUTE,
   roleGuard,
 } from './core/auth/auth-guards';
+import { AuthService } from './core/auth/auth-service';
+
+/** Logados não casam com a versão pública e seguem para a mesma página dentro do menu. */
+const visitorOnly = () => !inject(AuthService).isAuthenticated();
+
+const loadVerifySearchPage = () =>
+  import('./features/verification/verify-search-page').then(
+    (m) => m.VerifySearchPage,
+  );
+
+const loadVerifyResultPage = () =>
+  import('./features/verification/verify-result-page').then(
+    (m) => m.VerifyResultPage,
+  );
 
 export const appRoutes: Route[] = [
   { path: '', pathMatch: 'full', redirectTo: HOME_ROUTE.slice(1) },
@@ -30,18 +45,16 @@ export const appRoutes: Route[] = [
   {
     path: 'verificar',
     title: 'Verificar certificado · CertDocs',
-    loadComponent: () =>
-      import('./features/verification/verify-search-page').then(
-        (m) => m.VerifySearchPage,
-      ),
+    canMatch: [visitorOnly],
+    data: { publicLayout: true },
+    loadComponent: loadVerifySearchPage,
   },
   {
     path: 'verificar/:code',
     title: 'Verificação de certificado · CertDocs',
-    loadComponent: () =>
-      import('./features/verification/verify-result-page').then(
-        (m) => m.VerifyResultPage,
-      ),
+    canMatch: [visitorOnly],
+    data: { publicLayout: true },
+    loadComponent: loadVerifyResultPage,
   },
 
   // ---------- Área logada ----------
@@ -71,6 +84,16 @@ export const appRoutes: Route[] = [
           import('./features/my-certificates/my-certificates-page').then(
             (m) => m.MyCertificatesPage,
           ),
+      },
+      {
+        path: 'verificar',
+        title: 'Verificar certificado · CertDocs',
+        loadComponent: loadVerifySearchPage,
+      },
+      {
+        path: 'verificar/:code',
+        title: 'Verificação de certificado · CertDocs',
+        loadComponent: loadVerifyResultPage,
       },
       {
         path: 'admin',

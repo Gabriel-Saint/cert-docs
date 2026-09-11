@@ -40,7 +40,9 @@ import { StateMessage } from '../../shared/ui/state-message';
     StateMessage,
   ],
   template: `
-    <app-public-header />
+    @if (publicLayout()) {
+      <app-public-header />
+    }
     <section class="page narrow">
       @if (!normalizedCode()) {
         <app-state-message
@@ -228,6 +230,8 @@ export class VerifyResultPage {
 
   /** Parâmetro :code da rota (o QR Code aponta para cá). */
   readonly code = input.required<string>();
+  /** Visitantes veem o cabeçalho público; logados abrem a página dentro do menu. */
+  readonly publicLayout = input(false);
 
   protected readonly normalizedCode = computed(() =>
     normalizeVerificationCode(this.code()),
