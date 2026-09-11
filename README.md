@@ -8,6 +8,16 @@ Sistema para distribuir materiais restritos (apostilas, cursos) em PDF com o **C
 
 > **Status:** backend (API) completo · frontend Angular em desenvolvimento
 
+## Planejamento
+
+O projeto foi planejado com **spec-driven development** usando o [Kiro](https://kiro.dev): antes de qualquer código, foram escritos os requisitos, o design técnico e o plano de implementação. A especificação fica versionada junto com o código:
+
+- 📋 [Requisitos](.kiro/specs/cpf-pdf-watermark-generator/requirements.md) — user stories e critérios de aceite (formato EARS)
+- 🏗️ [Design técnico](.kiro/specs/cpf-pdf-watermark-generator/design.md) — arquitetura, contratos, modelo de dados e propriedades de corretude
+- ✅ [Plano de implementação](.kiro/specs/cpf-pdf-watermark-generator/tasks.md) — tarefas em fatias verticais, com o progresso marcado
+
+Os testes baseados em propriedades (fast-check) implementam diretamente as _correctness properties_ definidas no design.
+
 ## Stack
 
 | Camada   | Tecnologia                                             |
