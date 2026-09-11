@@ -1,0 +1,83 @@
+{
+  "name": "api",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/api/src",
+  "projectType": "application",
+  "tags": [],
+  "targets": {
+    "prune-lockfile": {
+      "dependsOn": ["build"],
+      "cache": true,
+      "executor": "@nx/js:prune-lockfile",
+      "outputs": [
+        "{workspaceRoot}/apps/api/dist/package.json",
+        "{workspaceRoot}/apps/api/dist/package-lock.json"
+      ],
+      "options": {
+        "buildTarget": "build"
+      }
+    },
+    "copy-workspace-modules": {
+      "dependsOn": ["build"],
+      "cache": true,
+      "outputs": ["{workspaceRoot}/apps/api/dist/workspace_modules"],
+      "executor": "@nx/js:copy-workspace-modules",
+      "options": {
+        "buildTarget": "build"
+      }
+    },
+    "prune": {
+      "dependsOn": ["prune-lockfile", "copy-workspace-modules"],
+      "executor": "nx:noop"
+    },
+    "serve": {
+      "continuous": true,
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "dependsOn": ["build"],
+      "options": {
+        "buildTarget": "api:build",
+        "runBuildTargetDependencies": false
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "api:build:development"
+        },
+        "production": {
+          "buildTarget": "api:build:production"
+        }
+      }
+    },
+    "test": {
+      "dependsOn": ["prisma-generate"],
+      "options": {
+        "passWithNoTests": true
+      }
+    },
+    "build": {
+      "dependsOn": ["prisma-generate", "^build"]
+    },
+    "typecheck": {
+      "dependsOn": ["prisma-generate", "^typecheck"]
+    },
+    "prisma-generate": {
+      "command": "prisma generate --config apps/api/prisma.config.ts",
+      "cache": true,
+      "inputs": ["{projectRoot}/prisma/schema.prisma"],
+      "outputs": ["{projectRoot}/src/generated"]
+    },
+    "prisma-migrate": {
+      "command": "prisma migrate dev --config apps/api/prisma.config.ts"
+    },
+    "prisma-deploy": {
+      "command": "prisma migrate deploy --config apps/api/prisma.config.ts"
+    },
+    "prisma-seed": {
+      "command": "prisma db seed --config apps/api/prisma.config.ts"
+    },
+    "prisma-studio": {
+      "continuous": true,
+      "command": "prisma studio --config apps/api/prisma.config.ts"
+    }
+  }
+}

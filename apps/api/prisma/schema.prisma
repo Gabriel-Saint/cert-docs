@@ -1,0 +1,58 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  // NestJS roda em CommonJS; sem isso o client gerado (ESM) quebra em runtime
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+  // A URL de conexão fica no prisma.config.ts (Prisma 7)
+}
+
+model User {
+  id           String        @id @default(cuid())
+  name         String        @db.VarChar(100)
+  email        String        @unique @db.VarChar(254)
+  /// Somente dígitos (11 caracteres)
+  cpf          String        @unique @db.Char(11)
+  passwordHash String
+  role         Role          @default(USER)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  downloadLogs DownloadLog[]
+
+  @@map("users")
+}
+
+model Document {
+  id           String        @id @default(cuid())
+  title        String        @db.VarChar(255)
+  description  String?       @db.VarChar(1000)
+  content      String
+  isActive     Boolean       @default(true)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  downloadLogs DownloadLog[]
+
+  @@map("documents")
+}
+
+model DownloadLog {
+  id         String   @id @default(cuid())
+  userId     String
+  documentId String
+  ipAddress  String?
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
+  document   Document @relation(fields: [documentId], references: [id])
+
+  @@index([userId])
+  @@index([documentId])
+  @@map("download_logs")
+}
+
+enum Role {
+  ADMIN
+  USER
+}
