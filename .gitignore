@@ -61,3 +61,6 @@ test-output
 .angular
 
 __screenshots__/
+
+# PDFs de certificados emitidos em desenvolvimento
+storage/

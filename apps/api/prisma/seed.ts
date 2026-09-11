@@ -46,6 +46,25 @@ const SAMPLE_DOCUMENTS = [
   },
 ];
 
+const SAMPLE_COURSE = {
+  id: 'seed-curso-nestjs',
+  title: 'NestJS com Arquitetura Hexagonal',
+  description:
+    'Do domínio aos adapters: construa uma API testável de ponta a ponta.',
+  coordinator: 'Prof. Ricardo Menezes',
+  modules: [
+    {
+      title: 'Fundamentos do NestJS: módulos, controllers e providers',
+      hours: 6,
+    },
+    { title: 'Injeção de dependências e composition root', hours: 5 },
+    { title: 'Arquitetura hexagonal: domínio, ports e adapters', hours: 8 },
+    { title: 'Persistência com Prisma e PostgreSQL', hours: 7 },
+    { title: 'Autenticação JWT e controle de acesso por roles', hours: 6 },
+    { title: 'Testes unitários, baseados em propriedades e e2e', hours: 8 },
+  ],
+};
+
 async function main(): Promise<void> {
   const email = requireEnv('ADMIN_EMAIL').trim().toLowerCase();
 
@@ -69,8 +88,25 @@ async function main(): Promise<void> {
     });
   }
 
+  const { id: courseId, modules, ...course } = SAMPLE_COURSE;
+  const moduleRows = modules.map((module, position) => ({
+    ...module,
+    position,
+  }));
+  await prisma.$transaction([
+    prisma.course.upsert({
+      where: { id: courseId },
+      update: course,
+      create: { id: courseId, ...course },
+    }),
+    prisma.courseModule.deleteMany({ where: { courseId } }),
+    prisma.courseModule.createMany({
+      data: moduleRows.map((row) => ({ ...row, courseId })),
+    }),
+  ]);
+
   console.log(
-    `Seed concluído: ADMIN ${email} e ${SAMPLE_DOCUMENTS.length} documentos.`,
+    `Seed concluído: ADMIN ${email}, ${SAMPLE_DOCUMENTS.length} documentos e 1 curso.`,
   );
 }
 

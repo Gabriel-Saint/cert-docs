@@ -11,16 +11,21 @@ datasource db {
 }
 
 model User {
-  id           String        @id @default(cuid())
-  name         String        @db.VarChar(100)
-  email        String        @unique @db.VarChar(254)
+  id                   String               @id @default(cuid())
+  name                 String               @db.VarChar(100)
+  email                String               @unique @db.VarChar(254)
   /// Somente dígitos (11 caracteres)
-  cpf          String        @unique @db.Char(11)
-  passwordHash String
-  role         Role          @default(USER)
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  downloadLogs DownloadLog[]
+  cpf                  String               @unique @db.Char(11)
+  passwordHash         String
+  role                 Role                 @default(USER)
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
+  downloadLogs         DownloadLog[]
+  certificateRequests  CertificateRequest[] @relation("RequestOwner")
+  reviewedRequests     CertificateRequest[] @relation("RequestReviewer")
+  certificates         Certificate[]        @relation("CertificateHolder")
+  issuedCertificates   Certificate[]        @relation("CertificateIssuer")
+  revokedCertificates  Certificate[]        @relation("CertificateRevoker")
 
   @@map("users")
 }
@@ -55,4 +60,108 @@ model DownloadLog {
 enum Role {
   ADMIN
   USER
+}
+
+// ---------- Certificados ----------
+
+model Course {
+  id           String               @id @default(cuid())
+  title        String               @db.VarChar(200)
+  description  String?              @db.VarChar(1000)
+  coordinator  String               @db.VarChar(100)
+  isActive     Boolean              @default(true)
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+  modules      CourseModule[]
+  requests     CertificateRequest[]
+  certificates Certificate[]
+
+  @@map("courses")
+}
+
+model CourseModule {
+  id       String @id @default(cuid())
+  courseId String
+  title    String @db.VarChar(120)
+  hours    Int
+  position Int
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([courseId, position])
+  @@map("course_modules")
+}
+
+enum CertificateRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model CertificateRequest {
+  id              String                   @id @default(cuid())
+  userId          String
+  courseId        String
+  status          CertificateRequestStatus @default(PENDING)
+  /// "<userId>:<courseId>" enquanto PENDING, null depois: garante no máximo um pedido pendente por aluno e curso
+  pendingKey      String?                  @unique
+  rejectionReason String?                  @db.VarChar(500)
+  reviewedById    String?
+  reviewedAt      DateTime?
+  createdAt       DateTime                 @default(now())
+  user            User                     @relation("RequestOwner", fields: [userId], references: [id])
+  reviewedBy      User?                    @relation("RequestReviewer", fields: [reviewedById], references: [id])
+  course          Course                   @relation(fields: [courseId], references: [id])
+  certificate     Certificate?
+
+  @@index([status, createdAt])
+  @@index([userId])
+  @@map("certificate_requests")
+}
+
+enum CertificateStatus {
+  VALID
+  REVOKED
+}
+
+model Certificate {
+  id               String             @id @default(cuid())
+  requestId        String             @unique
+  userId           String
+  courseId         String
+  /// Código de verificação sem prefixo nem hífens (12 caracteres Crockford Base32)
+  code             String             @unique @db.Char(12)
+  registryYear     Int
+  registrySequence Int
+  status           CertificateStatus  @default(VALID)
+  /// "<userId>:<courseId>" enquanto VALID, null depois: garante no máximo um certificado válido por aluno e curso
+  validKey         String?            @unique
+  /// Cópias do snapshot usadas em busca e ordenação no histórico
+  holderName       String             @db.VarChar(100)
+  courseTitle      String             @db.VarChar(200)
+  snapshot         Json
+  dataHash         String             @db.Char(64)
+  fileHash         String             @db.Char(64)
+  fileKey          String
+  issuedById       String
+  issuedAt         DateTime
+  revokedById      String?
+  revokedAt        DateTime?
+  revocationReason String?            @db.VarChar(500)
+  request          CertificateRequest @relation(fields: [requestId], references: [id])
+  user             User               @relation("CertificateHolder", fields: [userId], references: [id])
+  course           Course             @relation(fields: [courseId], references: [id])
+  issuedBy         User               @relation("CertificateIssuer", fields: [issuedById], references: [id])
+  revokedBy        User?              @relation("CertificateRevoker", fields: [revokedById], references: [id])
+
+  @@unique([registryYear, registrySequence])
+  @@index([issuedAt])
+  @@index([userId])
+  @@map("certificates")
+}
+
+model RegistryCounter {
+  year Int @id
+  last Int @default(0)
+
+  @@map("registry_counters")
 }
