@@ -1,8 +1,14 @@
 # Build a partir da RAIZ do monorepo:
 #   docker build -f apps/api/Dockerfile -t cpf-pdf-api .
 
+# Mesma versão do npm usada para gerar o package-lock.json (campo "packageManager" do package.json).
+# A imagem node:22 vem com npm 10, que interpreta o lockfile do npm 11 de outro jeito e recusa o "npm ci".
+ARG NPM_VERSION=11.12.1
+
 # ---------- Stage 1: build ----------
 FROM node:22-alpine AS builder
+ARG NPM_VERSION
+RUN npm install -g npm@${NPM_VERSION}
 WORKDIR /repo
 ENV NX_DAEMON=false \
     NX_NO_CLOUD=true
@@ -22,6 +28,8 @@ RUN DATABASE_URL=postgresql://build:build@localhost:5432/build \
 
 # ---------- Stage 2: runtime ----------
 FROM node:22-alpine AS runner
+ARG NPM_VERSION
+RUN npm install -g npm@${NPM_VERSION}
 WORKDIR /app
 ENV NODE_ENV=production
 

@@ -17,6 +17,11 @@
     "ci": "nx run-many -t lint typecheck test build"
   },
   "private": true,
+  "packageManager": "npm@11.12.1",
+  "engines": {
+    "node": ">=22.12.0",
+    "npm": ">=11"
+  },
   "devDependencies": {
     "@angular-devkit/core": "~22.1.0",
     "@angular-devkit/schematics": "~22.1.0",
