@@ -57,3 +57,7 @@ Thumbs.db
 # prisma generated client
 apps/api/src/generated
 test-output
+
+.angular
+
+__screenshots__/

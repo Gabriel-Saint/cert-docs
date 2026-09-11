@@ -7,3 +7,5 @@
 # prisma generated client
 apps/api/src/generated
 .kiro
+
+.angular
