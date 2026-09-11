@@ -25,7 +25,6 @@ Todas as rotas da API ficam sob o prefixo `/api` (ex.: `POST /api/auth/login`). 
 - **Download_Logger**: O componente responsável por registrar logs de download na tabela `download_logs`.
 - **JWT_Guard**: O guard `JwtAuthGuard` que valida tokens Bearer nas requisições HTTP.
 - **Role_Guard**: O guard `RolesGuard` que verifica se o usuário autenticado possui a role exigida pelo endpoint.
-- **CI**: O workflow do GitHub Actions do repositório.
 - **UserEntity**: Entidade de domínio com `id`, `name`, `email`, `cpf` (Value Object `Cpf`), `passwordHash`, `role` (`USER` ou `ADMIN`).
 - **DocumentEntity**: Entidade de domínio com `id`, `title`, `description`, `content`, `isActive`. (O sufixo `Entity` evita conflito com o tipo global `Document` do DOM e com o tipo gerado pelo Prisma.)
 - **DownloadLogEntity**: Registro que associa um `userId` a um `documentId` no momento do download.
@@ -241,15 +240,15 @@ Todas as rotas da API ficam sob o prefixo `/api` (ex.: `POST /api/auth/login`). 
 
 ---
 
-### Requirement 14: Qualidade do Repositório e CI
+### Requirement 14: Qualidade do Repositório
 
-**User Story:** Como desenvolvedor publicando o projeto no GitHub, quero validação automática a cada push e um repositório bem documentado, para que qualquer pessoa consiga entender, rodar e confiar no projeto.
+**User Story:** Como desenvolvedor publicando o projeto no GitHub, quero validar o projeto inteiro com um único comando local e manter o repositório bem documentado, para que qualquer pessoa consiga entender, rodar e confiar no projeto.
 
 #### Acceptance Criteria
 
-1. THE System SHALL fornecer o workflow `.github/workflows/ci.yml` que, em todo push e pull request para `main`, instala dependências, gera o cliente Prisma e executa lint, testes e build dos projetos afetados (`nx affected -t lint test build`).
-2. WHEN qualquer etapa de lint, teste ou build falhar, THE CI SHALL marcar a execução como falha.
-3. THE System SHALL fornecer um `README.md` na raiz contendo: descrição do projeto, stack, badge de status do CI, como rodar em desenvolvimento, como rodar com Docker, variáveis de ambiente e credenciais do seed.
+1. THE System SHALL fornecer o script `npm run ci`, que executa lint, typecheck, testes e build de todos os projetos do monorepo.
+2. WHEN qualquer etapa de lint, typecheck, teste ou build falhar, THE script SHALL terminar com código de saída diferente de zero.
+3. THE System SHALL fornecer um `README.md` na raiz contendo: descrição do projeto, stack, como rodar em desenvolvimento, como rodar com Docker, variáveis de ambiente e credenciais do seed.
 4. THE System SHALL fornecer um `.gitignore` que exclua `node_modules`, `dist`, `coverage`, `.env`, `.nx/cache`, `.nx/workspace-data` e o cliente Prisma gerado (`apps/api/src/generated`).
 
 ---

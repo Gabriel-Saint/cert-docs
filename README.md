@@ -1,9 +1,5 @@
 # CPF PDF Watermark Generator
 
-<!-- Troque SEU_USUARIO/SEU_REPO pelo caminho do repositório no GitHub -->
-
-[![CI](https://github.com/SEU_USUARIO/SEU_REPO/actions/workflows/ci.yml/badge.svg)](https://github.com/SEU_USUARIO/SEU_REPO/actions/workflows/ci.yml)
-
 Sistema para distribuir materiais restritos (apostilas, cursos) em PDF com o **CPF e o nome de quem baixou carimbados no cabeçalho e no rodapé de todas as páginas**. Se o arquivo vazar, dá para saber de onde veio — e cada download fica registrado.
 
 > **Status:** backend (API) completo · frontend Angular em desenvolvimento
@@ -28,7 +24,7 @@ Os testes baseados em propriedades (fast-check) implementam diretamente as _corr
 | PDF      | PDFKit                                                 |
 | Auth     | JWT (Passport) · bcrypt · controle de acesso por roles |
 | Testes   | Jest · fast-check (property-based) · Supertest         |
-| Infra    | Docker (multi-stage) · Docker Compose · GitHub Actions |
+| Infra    | Docker (multi-stage) · Docker Compose                  |
 | Frontend | Angular 22 · standalone · zoneless · signals · Vitest  |
 
 ## Estrutura
@@ -117,7 +113,7 @@ Erros de negócio seguem um formato único:
 
 ```bash
 npm test          # unitários, property-based e e2e
-npm run ci        # lint + typecheck + testes + build (o mesmo que roda no GitHub Actions)
+npm run ci        # lint + typecheck + testes + build
 ```
 
 - **Property-based (fast-check):** validação de CPF comparada com um oráculo independente, unicidade de email/CPF, isolamento de roles, listagem só de ativos, carimbo em todas as páginas do PDF.

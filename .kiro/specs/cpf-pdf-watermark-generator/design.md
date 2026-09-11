@@ -17,7 +17,6 @@ Sistema web para geração de PDFs personalizados com o CPF do usuário inserido
 | Monorepo | Nx Workspace (npm) |
 | Testes | Jest (api), Vitest (web e shared), fast-check (property tests), Supertest (e2e) |
 | Containerização | Docker + Docker Compose |
-| CI | GitHub Actions |
 | Runtime | Node.js 22 LTS |
 
 ---
@@ -42,7 +41,6 @@ cpf-pdf-watermark-generator/          <- raiz do repositório / workspace Nx
 │       └── Dockerfile
 ├── libs/
 │   └── shared/                       <- @cpf-pdf/shared (sem dependências externas)
-├── .github/workflows/ci.yml
 ├── docker-compose.yml
 ├── .env.example
 ├── nx.json
@@ -297,38 +295,6 @@ JWT_SECRET=troque-por-um-segredo-longo-e-aleatorio
 # Seed
 ADMIN_EMAIL=admin@example.com
 ADMIN_PASSWORD=admin12345
-```
-
-### CI (GitHub Actions)
-
-`.github/workflows/ci.yml`:
-
-```yaml
-name: CI
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-jobs:
-  ci:
-    runs-on: ubuntu-latest
-    env:
-      DATABASE_URL: postgresql://ci:ci@localhost:5432/ci   # env() do prisma.config.ts exige a variável
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-node@v5
-        with:
-          node-version: 22
-          cache: npm
-      - run: npm ci
-      - uses: nrwl/nx-set-shas@v4
-      - run: npx nx run api:prisma-generate
-      - run: npx nx affected -t lint test build
 ```
 
 ---

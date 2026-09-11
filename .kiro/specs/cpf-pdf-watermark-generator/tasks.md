@@ -2,17 +2,17 @@
 
 ## Overview
 
-Sistema web para geração de PDFs personalizados com CPF do usuário no cabeçalho/rodapé. Monorepo Nx com `apps/web` (Angular 21 + Angular Material), `apps/api` (NestJS hexagonal + Prisma 7 + PDFKit + JWT) e `libs/shared`, com Docker Compose e CI no GitHub Actions.
+Sistema web para geração de PDFs personalizados com CPF do usuário no cabeçalho/rodapé. Monorepo Nx com `apps/web` (Angular 21 + Angular Material), `apps/api` (NestJS hexagonal + Prisma 7 + PDFKit + JWT) e `libs/shared`, com Docker Compose para rodar tudo localmente.
 
-O plano é organizado em **fatias verticais**: cada fatia entrega uma funcionalidade funcionando de ponta a ponta (banco → API → tela). Assim o repositório está sempre rodando, cada push tem algo visível e o CI fica verde desde o começo.
+O plano é organizado em **fatias verticais**: cada fatia entrega uma funcionalidade funcionando de ponta a ponta (banco → API → tela). Assim o repositório está sempre rodando e cada commit tem algo visível.
 
 ## Convenções de Commit
 
 - Formato [Conventional Commits](https://www.conventionalcommits.org/): `tipo(escopo): descrição no imperativo`
-- Tipos: `feat`, `fix`, `test`, `refactor`, `chore`, `docs`, `ci`, `build`
-- Escopos: `api`, `web`, `shared`, `infra`, `ci`
+- Tipos: `feat`, `fix`, `test`, `refactor`, `chore`, `docs`, `build`
+- Escopos: `api`, `web`, `shared`, `infra`
 - Um commit por subtarefa (sugestão em cada uma) e push ao final de cada subtarefa
-- Opcional (boa prática): uma branch por fatia (`feat/auth`, `feat/documents`...) com Pull Request para `main`, para o CI rodar no PR antes do merge
+- Opcional (boa prática): uma branch por fatia (`feat/auth`, `feat/documents`...) com Pull Request para `main`
 
 ## Tasks
 
@@ -23,7 +23,7 @@ O plano é organizado em **fatias verticais**: cada fatia entrega uma funcionali
     - _Commit: `docs: add project specs`_
     - _Requirements: 14.4_
 
-  - [ ] 1.2 Criar workspace Nx
+  - [x] 1.2 Criar workspace Nx
     - `npx create-nx-workspace@latest` (npm), conferir na documentação do Nx a compatibilidade da versão com Angular 21
     - Gerar `apps/web` (Angular, SCSS, Vitest), `apps/api` (NestJS, Jest) e `libs/shared` (lib TypeScript pura, Vitest, sem dependências)
     - Confirmar o alias `@cpf-pdf/shared` no `tsconfig.base.json`
@@ -48,20 +48,13 @@ O plano é organizado em **fatias verticais**: cada fatia entrega uma funcionali
     - _Commit: `feat(api): configure prisma 7 with initial schema`_
     - _Requirements: Data Models, 1.5_
 
-  - [ ] 1.5 Bootstrap da API e proxy do front
+  - [x] 1.5 Bootstrap da API e proxy do front
     - `main.ts`: `setGlobalPrefix('api')` e `ValidationPipe` global (`whitelist`, `forbidNonWhitelisted`, `transform`)
     - `ConfigModule` com validação de `DATABASE_URL` e `JWT_SECRET` na inicialização
     - `apps/web/proxy.conf.json` (`/api` → `http://localhost:3000`) configurado no target `serve`
     - `provideHttpClient(withInterceptors([]))` no `app.config.ts`
     - _Commit: `feat: add api global prefix, validation and dev proxy`_
     - _Requirements: 13.1, 13.2, 13.3, 13.4, 13.5_
-
-  - [ ] 1.6 CI no GitHub Actions
-    - Criar `.github/workflows/ci.yml` (checkout, setup-node 22, `npm ci`, `nx-set-shas`, `prisma-generate`, `nx affected -t lint test build`)
-    - Adicionar badge do CI no README
-    - Confirmar execução verde no GitHub
-    - _Commit: `ci: add github actions workflow`_
-    - _Requirements: 14.1, 14.2, 14.3_
 
 - [ ] 2. Fatia 1 — Autenticação (api + web)
   - [x] 2.1 Shared: Role, contratos de auth e utilitários de CPF
@@ -141,7 +134,7 @@ O plano é organizado em **fatias verticais**: cada fatia entrega uma funcionali
 
   - [ ] 2.11 Checkpoint — Autenticação funcionando
     - Fluxo manual: cadastrar → logar → token no localStorage → rota protegida acessível → sair → rota protegida redireciona
-    - Testes passando e CI verde; atualizar o README com o fluxo
+    - Testes passando (`npm run ci`); atualizar o README com o fluxo
     - Perguntar ao usuário se surgirem dúvidas
 
 - [ ] 3. Fatia 2 — Listagem de documentos
@@ -190,7 +183,7 @@ O plano é organizado em **fatias verticais**: cada fatia entrega uma funcionali
 
   - [ ] 3.9 Checkpoint — Listagem funcionando
     - Rodar o seed, logar e ver os documentos em mobile, tablet e desktop (DevTools)
-    - Testes passando e CI verde
+    - Testes passando (`npm run ci`)
     - Perguntar ao usuário se surgirem dúvidas
 
 - [ ] 4. Fatia 3 — PDF personalizado
@@ -237,7 +230,7 @@ O plano é organizado em **fatias verticais**: cada fatia entrega uma funcionali
 
   - [ ] 4.8 Checkpoint — PDF funcionando
     - Baixar o documento longo e conferir: carimbo em todas as páginas, sem páginas em branco, nome do arquivo correto, registro em `download_logs`
-    - Testes passando e CI verde
+    - Testes passando (`npm run ci`)
     - Perguntar ao usuário se surgirem dúvidas
 
 - [ ] 5. Fatia 4 — Área administrativa
@@ -277,7 +270,7 @@ O plano é organizado em **fatias verticais**: cada fatia entrega uma funcionali
 
   - [ ] 5.7 Checkpoint — Admin funcionando
     - Logar como ADMIN (seed): criar, editar e excluir documento; ver usuários. Logar como USER: sem links de admin e `/admin` redireciona
-    - Testes passando e CI verde
+    - Testes passando (`npm run ci`)
     - Perguntar ao usuário se surgirem dúvidas
 
 - [ ] 6. Containerização completa
@@ -349,7 +342,7 @@ O plano é organizado em **fatias verticais**: cada fatia entrega uma funcionali
   "waves": [
     { "id": 0, "tasks": ["1.1"] },
     { "id": 1, "tasks": ["1.2"] },
-    { "id": 2, "tasks": ["1.3", "1.5", "1.6", "2.1"] },
+    { "id": 2, "tasks": ["1.3", "1.5", "2.1"] },
     { "id": 3, "tasks": ["1.4", "2.2", "2.3", "2.9"] },
     { "id": 4, "tasks": ["2.4", "2.6", "2.10"] },
     { "id": 5, "tasks": ["2.5", "2.7", "2.8"] },
