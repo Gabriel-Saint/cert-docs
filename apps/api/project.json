@@ -54,6 +54,10 @@
         "passWithNoTests": true
       }
     },
+    "test-integration": {
+      "dependsOn": ["prisma-generate"],
+      "command": "jest --config apps/api/jest.integration.config.cts --runInBand"
+    },
     "build": {
       "dependsOn": ["prisma-generate", "^build"]
     },

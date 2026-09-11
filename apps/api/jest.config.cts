@@ -13,6 +13,8 @@ module.exports = {
   preset: '../../jest.preset.js',
   testEnvironment: 'node',
   setupFiles: ['<rootDir>/src/testing/jest.setup-env.ts'],
+  // Chromium e Postgres ficam de fora do teste rápido: rodam em `nx run api:test-integration`
+  testPathIgnorePatterns: ['/node_modules/', '\\.integration\\.spec\\.ts$'],
   transform: {
     '^.+\\.[tj]s$': ['@swc/jest', swcJestConfig],
   },

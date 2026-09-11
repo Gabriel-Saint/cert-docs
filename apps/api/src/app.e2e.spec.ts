@@ -104,9 +104,22 @@ describe('API (e2e)', () => {
       expect(Object.keys(spec.paths).sort()).toEqual([
         '/api/auth/login',
         '/api/auth/register',
+        '/api/certificate-requests',
+        '/api/certificate-requests/{id}/approve',
+        '/api/certificate-requests/{id}/reject',
+        '/api/certificates',
+        '/api/certificates/{id}',
+        '/api/certificates/{id}/pdf',
+        '/api/certificates/{id}/revoke',
+        '/api/courses',
+        '/api/courses/{id}',
         '/api/documents',
         '/api/documents/{id}',
         '/api/documents/{id}/pdf',
+        '/api/me/certificate-requests',
+        '/api/me/certificates',
+        '/api/public/certificates/{code}',
+        '/api/public/certificates/{code}/file-check',
         '/api/users',
       ]);
       expect(spec.components.securitySchemes).toHaveProperty(
