@@ -29,7 +29,7 @@ Os testes baseados em propriedades (fast-check) implementam diretamente as _corr
 | Auth     | JWT (Passport) · bcrypt · controle de acesso por roles |
 | Testes   | Jest · fast-check (property-based) · Supertest         |
 | Infra    | Docker (multi-stage) · Docker Compose · GitHub Actions |
-| Frontend | Angular + Angular Material _(em breve)_                |
+| Frontend | Angular 22 · standalone · zoneless · signals · Vitest  |
 
 ## Estrutura
 
@@ -43,6 +43,8 @@ apps/
       infrastructure/        adapters: Prisma, PDFKit, bcrypt, JWT
       presentation/          controllers, DTOs, guards, filtro de erros
       modules/               composition root: liga ports aos adapters
+  web/                       Angular (em construção)
+    proxy.conf.json          /api -> API local, sem CORS em desenvolvimento
 libs/
   shared/                    tipos, contratos da API e utilitários de CPF (usados por api e web)
 ```
@@ -61,7 +63,10 @@ npm run db:up               # sobe o PostgreSQL
 npm run db:migrate          # aplica as migrations
 npm run db:seed             # cria o ADMIN e documentos de exemplo
 npm run start:api           # http://localhost:3000/api
+npm run start:web           # http://localhost:4200 (em outro terminal)
 ```
+
+> Não defina `PORT` no `.env`: o Nx carrega esse arquivo em todas as tarefas e o dev server do Angular passaria a usar a mesma porta da API.
 
 Credenciais do seed (definidas no `.env`): `admin@example.com` / `admin12345`.
 
