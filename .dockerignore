@@ -1,0 +1,16 @@
+**/node_modules
+**/dist
+**/out-tsc
+**/test-output
+**/coverage
+**/src/generated
+.nx
+.git
+.env
+.env.*
+!.env.example
+.vscode
+.idea
+.claude
+.kiro
+*.md
