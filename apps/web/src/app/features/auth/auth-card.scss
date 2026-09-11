@@ -6,6 +6,12 @@
   box-sizing: border-box;
 }
 
+.theme-toggle {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+}
+
 .card {
   width: 100%;
   max-width: 420px;

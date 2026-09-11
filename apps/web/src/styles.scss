@@ -1,8 +1,11 @@
 @use '@angular/material' as mat;
 
-/* Tema base do Angular Material (M3). A identidade visual definitiva entra na etapa de estilos. */
+/*
+ * Tema base do Angular Material (M3). As cores saem com light-dark(), então o
+ * color-scheme decide o modo: sem classe segue o sistema; ThemeService fixa claro ou escuro.
+ */
 html {
-  color-scheme: light;
+  color-scheme: light dark;
   @include mat.theme(
     (
       color: mat.$azure-palette,
@@ -10,6 +13,29 @@ html {
       density: 0,
     )
   );
+
+  /* Barra superior, menu e conteúdo em superfícies diferentes para não parecerem um bloco só */
+  @include mat.toolbar-overrides(
+    (
+      container-background-color: var(--mat-sys-surface-container),
+    )
+  );
+  @include mat.sidenav-overrides(
+    (
+      container-background-color: var(--mat-sys-surface-container-low),
+      container-divider-color: var(--mat-sys-outline-variant),
+      container-shape: 0,
+      content-background-color: var(--mat-sys-surface),
+    )
+  );
+}
+
+html.theme-light {
+  color-scheme: light;
+}
+
+html.theme-dark {
+  color-scheme: dark;
 }
 
 html,

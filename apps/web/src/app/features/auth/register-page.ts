@@ -22,6 +22,7 @@ import { readApiError } from '../../core/api/api-error';
 import { HOME_ROUTE } from '../../core/auth/auth-guards';
 import { AuthService } from '../../core/auth/auth-service';
 import { cpfValidator, maskCpfInput } from '../../core/forms/cpf-field';
+import { ThemeToggle } from '../../shared/ui/theme-toggle';
 
 /** Mesmos limites da API (RegisterDto). */
 const LIMITS = {
@@ -51,8 +52,10 @@ function passwordsMatch(group: AbstractControl): ValidationErrors | null {
     MatInputModule,
     MatButtonModule,
     MatProgressBarModule,
+    ThemeToggle,
   ],
   template: `
+    <app-theme-toggle class="theme-toggle" />
     <mat-card class="card" appearance="outlined">
       @if (submitting()) {
         <mat-progress-bar mode="indeterminate" />

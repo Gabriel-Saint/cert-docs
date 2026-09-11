@@ -3,16 +3,18 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../core/auth/auth-service';
+import { ThemeToggle } from '../shared/ui/theme-toggle';
 
 /** Cabeçalho das páginas abertas (verificação pública). */
 @Component({
   selector: 'app-public-header',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatToolbarModule, MatButtonModule, RouterLink],
+  imports: [MatToolbarModule, MatButtonModule, RouterLink, ThemeToggle],
   template: `
-    <mat-toolbar>
+    <mat-toolbar class="toolbar">
       <a class="brand" routerLink="/verificar">CertDocs</a>
       <span class="spacer"></span>
+      <app-theme-toggle />
       @if (auth.isAuthenticated()) {
         <a mat-button routerLink="/documentos">Ir para o sistema</a>
       } @else {
@@ -21,6 +23,10 @@ import { AuthService } from '../core/auth/auth-service';
     </mat-toolbar>
   `,
   styles: `
+    .toolbar {
+      gap: 8px;
+      border-bottom: 1px solid var(--mat-sys-outline-variant);
+    }
     .brand {
       color: inherit;
       text-decoration: none;

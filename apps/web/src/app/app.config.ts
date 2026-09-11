@@ -21,6 +21,7 @@ import {
 } from '@angular/router';
 import { appRoutes } from './app.routes';
 import { authInterceptor } from './core/auth/auth-interceptor';
+import { ThemeService } from './core/theme/theme-service';
 import { PtBrPaginatorIntl } from './shared/ui/pt-br-paginator-intl';
 
 registerLocaleData(localePt);
@@ -44,6 +45,8 @@ export const appConfig: ApplicationConfig = {
       inject(MatIconRegistry).setDefaultFontSetClass(
         'material-symbols-outlined',
       );
+      // Mantém a classe de tema do <html> em sincronia com a escolha salva
+      inject(ThemeService);
     }),
   ],
 };

@@ -23,6 +23,7 @@ import { map } from 'rxjs';
 import { LOGIN_ROUTE } from '../core/auth/auth-interceptor';
 import { AuthService } from '../core/auth/auth-service';
 import { ROLE_LABEL } from '../shared/ui/labels';
+import { ThemeToggle } from '../shared/ui/theme-toggle';
 
 interface NavItem {
   label: string;
@@ -66,6 +67,7 @@ const ADMIN_NAV: NavItem[] = [
     MatIconModule,
     MatButtonModule,
     MatMenuModule,
+    ThemeToggle,
   ],
   template: `
     <mat-toolbar class="toolbar">
@@ -81,6 +83,7 @@ const ADMIN_NAV: NavItem[] = [
       }
       <a class="brand" routerLink="/documentos">CertDocs</a>
       <span class="spacer"></span>
+      <app-theme-toggle />
       <button
         mat-button
         type="button"
@@ -167,6 +170,7 @@ const ADMIN_NAV: NavItem[] = [
       top: 0;
       z-index: 2;
       gap: 8px;
+      border-bottom: 1px solid var(--mat-sys-outline-variant);
     }
     .brand {
       color: inherit;

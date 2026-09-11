@@ -19,6 +19,7 @@ import { Router, RouterLink } from '@angular/router';
 import { readApiError } from '../../core/api/api-error';
 import { safeReturnUrl } from '../../core/auth/auth-guards';
 import { AuthService } from '../../core/auth/auth-service';
+import { ThemeToggle } from '../../shared/ui/theme-toggle';
 
 @Component({
   selector: 'app-login-page',
@@ -31,8 +32,10 @@ import { AuthService } from '../../core/auth/auth-service';
     MatInputModule,
     MatButtonModule,
     MatProgressBarModule,
+    ThemeToggle,
   ],
   template: `
+    <app-theme-toggle class="theme-toggle" />
     <mat-card class="card" appearance="outlined">
       @if (submitting()) {
         <mat-progress-bar mode="indeterminate" />

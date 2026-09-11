@@ -10,6 +10,15 @@
       content="Materiais em PDF com identificação do aluno e certificados verificáveis por código e QR Code."
     />
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <script>
+      // Aplica o tema salvo antes do Angular carregar, para não piscar o tema errado
+      try {
+        var theme = localStorage.getItem('cert-docs.theme');
+        if (theme === 'light' || theme === 'dark') {
+          document.documentElement.classList.add('theme-' + theme);
+        }
+      } catch (e) {}
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
