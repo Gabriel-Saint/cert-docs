@@ -237,6 +237,7 @@ Todas as rotas da API ficam sob o prefixo `/api` (ex.: `POST /api/auth/login`). 
 4. THE Backend SHALL aplicar um `ValidationPipe` global com `whitelist: true`, `forbidNonWhitelisted: true` e `transform: true`.
 5. WHEN o Backend inicia sem as variáveis obrigatórias (`DATABASE_URL`, `JWT_SECRET`), THE Backend SHALL falhar na inicialização com uma mensagem indicando quais variáveis estão ausentes.
 6. THE System SHALL fornecer um script de seed que cria um usuário `ADMIN` (credenciais lidas de `ADMIN_EMAIL` e `ADMIN_PASSWORD`) e documentos de exemplo; WHEN o seed é executado mais de uma vez, THE System SHALL não duplicar registros.
+7. THE Backend SHALL publicar a documentação OpenAPI (Swagger) em `/api/docs`, com todas as rotas, os formatos de request e response, os erros possíveis e o esquema de autenticação Bearer JWT.
 
 ---
 
@@ -261,4 +262,3 @@ Itens registrados para uma versão futura, não fazem parte dos critérios acima
 - **Tela de logs de download** para o ADMIN (quem baixou o quê e quando).
 - **Refresh token** e armazenamento do token em cookie `httpOnly` em vez de `localStorage`.
 - **Rate limiting** no login (`@nestjs/throttler`).
-- **Documentação da API** com Swagger (`@nestjs/swagger`).

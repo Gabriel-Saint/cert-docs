@@ -69,12 +69,14 @@ Credenciais do seed (definidas no `.env`): `admin@example.com` / `admin12345`.
 ### Com Docker
 
 ```bash
-docker compose up --build   # postgres + api (migrations aplicadas automaticamente)
+docker compose up -d --build   # postgres + api (migrations aplicadas automaticamente)
 ```
 
 ## API
 
 Todas as rotas têm o prefixo `/api`.
+
+> 📖 **Documentação interativa (Swagger):** com a API rodando, acesse **http://localhost:3000/api/docs**. Faça login, clique em **Authorize**, cole o token e teste as rotas pelo navegador, inclusive o download do PDF. A especificação OpenAPI em JSON fica em `/api/docs-json`.
 
 | Método | Rota                 | Acesso      | Descrição                                           |
 | ------ | -------------------- | ----------- | --------------------------------------------------- |
