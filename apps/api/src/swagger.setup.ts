@@ -42,6 +42,16 @@ export function setupSwagger(app: INestApplication): void {
       'Catálogo de documentos e download do PDF personalizado',
     )
     .addTag('users', 'Usuários cadastrados (somente ADMIN)')
+    .addTag('courses', 'Cursos e conteúdo programático')
+    .addTag(
+      'certificate-requests',
+      'Pedidos de certificado: solicitação, aprovação e recusa',
+    )
+    .addTag(
+      'certificates',
+      'Certificados emitidos, download, histórico e revogação',
+    )
+    .addTag('public', 'Verificação pública de certificados (sem login)')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
