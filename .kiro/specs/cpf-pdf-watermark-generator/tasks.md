@@ -32,14 +32,14 @@ O plano é organizado em **fatias verticais**: cada fatia entrega uma funcionali
     - _Commit: `chore: scaffold nx workspace with web, api and shared`_
     - _Requirements: Architecture overview_
 
-  - [ ] 1.3 Ambiente local e arquivos do repositório
+  - [x] 1.3 Ambiente local e arquivos do repositório
     - `docker-compose.yml` inicial só com `postgres` (imagem `postgres:16-alpine`, volume nomeado, healthcheck)
     - `.env.example` e `.env` local; completar o `.gitignore` (`node_modules`, `dist`, `coverage`, `.env`, `.nx/cache`, `.nx/workspace-data`, `apps/api/src/generated`)
     - `README.md` inicial: descrição, stack e como subir o banco
     - _Commit: `chore(infra): add postgres compose, env example and readme`_
     - _Requirements: 12.5, 12.7, 12.8, 12.9, 14.3, 14.4_
 
-  - [ ] 1.4 Configurar Prisma 7 na api
+  - [x] 1.4 Configurar Prisma 7 na api
     - Instalar `prisma`, `@prisma/client`, `@prisma/adapter-pg`, `pg`, `dotenv`, `tsx`
     - Criar `apps/api/prisma/schema.prisma` (generator `prisma-client`, `output = "../src/generated/prisma"`, `moduleFormat = "cjs"`) com User, Document, DownloadLog e Role
     - Criar `apps/api/prisma.config.ts` e os targets `prisma-generate`, `prisma-migrate` e `prisma-seed` no `project.json`
@@ -64,14 +64,14 @@ O plano é organizado em **fatias verticais**: cada fatia entrega uma funcionali
     - _Requirements: 14.1, 14.2, 14.3_
 
 - [ ] 2. Fatia 1 — Autenticação (api + web)
-  - [ ] 2.1 Shared: Role, contratos de auth e utilitários de CPF
+  - [x] 2.1 Shared: Role, contratos de auth e utilitários de CPF
     - `Role` (objeto const + union type)
     - `RegisterRequest`, `LoginRequest`, `LoginResponse`, `PublicUser`
     - `normalizeCpf`, `isValidCpf`, `formatCpf`, `maskCpf`, `partialCpf`
     - _Commit: `feat(shared): add role, auth contracts and cpf utils`_
     - _Requirements: 2.1, 2.2, 2.4, 2.5_
 
-  - [ ]* 2.2 Property tests dos utilitários de CPF
+  - [x]* 2.2 Property tests dos utilitários de CPF
     - Instalar `fast-check`; criar arbitrary de CPF válido (9 dígitos + verificadores calculados)
     - **Property 2: Validação dos dígitos verificadores do CPF**
     - **Property 3: CPF válido sempre produz formato correto**
@@ -79,7 +79,7 @@ O plano é organizado em **fatias verticais**: cada fatia entrega uma funcionali
     - _Commit: `test(shared): add property tests for cpf utils`_
     - **Validates: Requirements 2.1, 2.2, 2.4, 7.7, 9.1**
 
-  - [ ] 2.3 Domínio de usuário
+  - [x] 2.3 Domínio de usuário
     - `DomainError` e erros `InvalidCpfError`, `EmailOrCpfAlreadyInUseError`, `InvalidCredentialsError`, `UserNotFoundError`
     - Value Object `Cpf` (`create`, `formatted`, `masked`, `partial`)
     - `UserEntity`
@@ -87,33 +87,33 @@ O plano é organizado em **fatias verticais**: cada fatia entrega uma funcionali
     - _Commit: `feat(api): add user domain, cpf value object and ports`_
     - _Requirements: 1.1, 1.5, 2.3, 3.1_
 
-  - [ ] 2.4 Infraestrutura de usuário e segurança
+  - [x] 2.4 Infraestrutura de usuário e segurança
     - `PrismaUserRepository` (mapeia linha ↔ entidade; converte `P2002` em `EmailOrCpfAlreadyInUseError`)
     - `BcryptHashAdapter`
     - `JwtTokenAdapter` com `JwtModule` configurado para expirar em `24h`
     - _Commit: `feat(api): add prisma user repository, bcrypt and jwt adapters`_
     - _Requirements: 1.5, 1.8, 3.1, 3.5_
 
-  - [ ]* 2.5 Testes dos adapters de segurança
+  - [x]* 2.5 Testes dos adapters de segurança
     - **Property 4: Senhas jamais são armazenadas em texto puro**
     - **Property 9: JWT gerado no login contém os campos obrigatórios**
     - _Commit: `test(api): add hash and token adapter tests`_
     - **Validates: Requirements 1.5, 3.1, 3.5**
 
-  - [ ] 2.6 Casos de uso de autenticação
+  - [x] 2.6 Casos de uso de autenticação
     - `RegisterUserUseCase` (valida CPF, checa unicidade, gera hash, role `USER`)
     - `AuthenticateUserUseCase` (mesma mensagem para email inexistente e senha errada)
     - Classes puras, sem decorators do NestJS
     - _Commit: `feat(api): add register and authenticate use cases`_
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 3.1, 3.2_
 
-  - [ ]* 2.7 Testes dos casos de uso de autenticação
+  - [x]* 2.7 Testes dos casos de uso de autenticação
     - **Property 5: Unicidade de email e CPF no cadastro**
     - Teste de credenciais inválidas (email inexistente e senha errada retornam o mesmo erro)
     - _Commit: `test(api): add auth use case tests`_
     - **Validates: Requirements 1.3, 1.4, 1.8, 3.2**
 
-  - [ ] 2.8 Camada de apresentação de autenticação
+  - [x] 2.8 Camada de apresentação de autenticação
     - `RegisterDto` e `LoginDto` com `class-validator` (limites de tamanho do Req 1.7), implementando os contratos da shared
     - `AuthController` (`POST /auth/register` retorna `PublicUser`, `POST /auth/login` retorna `LoginResponse`)
     - `DomainExceptionFilter` registrado globalmente
@@ -145,38 +145,38 @@ O plano é organizado em **fatias verticais**: cada fatia entrega uma funcionali
     - Perguntar ao usuário se surgirem dúvidas
 
 - [ ] 3. Fatia 2 — Listagem de documentos
-  - [ ] 3.1 Shared: contratos de documento
+  - [x] 3.1 Shared: contratos de documento
     - `DocumentSummary`, `DocumentDetail`, `CreateDocumentRequest`, `UpdateDocumentRequest`
     - _Commit: `feat(shared): add document contracts`_
     - _Requirements: 5.1, 6.1_
 
-  - [ ] 3.2 Domínio de documento
+  - [x] 3.2 Domínio de documento
     - `DocumentEntity`, `DocumentNotFoundError`, `DocumentRepositoryPort`
     - _Commit: `feat(api): add document domain`_
     - _Requirements: 5.4, 5.5_
 
-  - [ ] 3.3 Repositório Prisma de documentos
+  - [x] 3.3 Repositório Prisma de documentos
     - `PrismaDocumentRepository` (`findActiveById`, `findAllActive`, `create`, `update`, `deactivate`)
     - _Commit: `feat(api): add prisma document repository`_
     - _Requirements: 5.1, 5.2, 5.3, 5.5_
 
-  - [ ] 3.4 Casos de uso de leitura
+  - [x] 3.4 Casos de uso de leitura
     - `ListDocumentsUseCase` (só ativos) e `GetDocumentUseCase` (404 para inexistente ou inativo)
     - _Commit: `feat(api): add list and get document use cases`_
     - _Requirements: 5.4, 5.5, 6.1_
 
-  - [ ]* 3.5 Property test da listagem
+  - [x]* 3.5 Property test da listagem
     - **Property 8: Listagem de documentos retorna somente registros ativos**
     - _Commit: `test(api): add property test for active documents listing`_
     - **Validates: Requirements 5.5, 6.1**
 
-  - [ ] 3.6 Endpoints de leitura
+  - [x] 3.6 Endpoints de leitura
     - `DocumentController` com `GET /documents` e `GET /documents/:id` (`@Roles(Role.USER, Role.ADMIN)`)
     - `DocumentModule`
     - _Commit: `feat(api): add document read endpoints`_
     - _Requirements: 4.5, 5.4, 5.5, 6.1, 6.2_
 
-  - [ ] 3.7 Seed do banco
+  - [x] 3.7 Seed do banco
     - `apps/api/prisma/seed.ts`: ADMIN a partir de `ADMIN_EMAIL`/`ADMIN_PASSWORD` e 3–5 documentos de exemplo (um com conteúdo longo, para testar várias páginas no PDF)
     - Usar `upsert` para ser idempotente
     - _Commit: `feat(api): add idempotent database seed`_
@@ -194,37 +194,37 @@ O plano é organizado em **fatias verticais**: cada fatia entrega uma funcionali
     - Perguntar ao usuário se surgirem dúvidas
 
 - [ ] 4. Fatia 3 — PDF personalizado
-  - [ ] 4.1 Domínio de download e PDF
+  - [x] 4.1 Domínio de download e PDF
     - `DownloadLogEntity`, `DownloadLogRepositoryPort`, `PdfGeneratorPort`
     - `PdfGenerationError`, `DownloadLogPersistenceError`
     - _Commit: `feat(api): add pdf and download log domain`_
     - _Requirements: 7.1, 8.1_
 
-  - [ ] 4.2 Adapters de PDF e log
+  - [x] 4.2 Adapters de PDF e log
     - `PdfKitGeneratorAdapter`: conteúdo primeiro, depois carimbo em cada página via `bufferedPageRange` + `switchToPage`, com `margins.bottom = 0` durante o carimbo
     - `PrismaDownloadLogRepository`
     - _Commit: `feat(api): add pdfkit generator and download log repository`_
     - _Requirements: 7.2, 7.4, 8.1_
 
-  - [ ]* 4.3 Testes do gerador de PDF
+  - [x]* 4.3 Testes do gerador de PDF
     - Instalar `pdf-parse` para extrair texto e contar páginas
     - **Property 1: PDF contém exatamente o CPF do usuário solicitante**
     - **Property 10: Carimbo em todas as páginas, sem páginas extras**
     - _Commit: `test(api): add pdf generator tests`_
     - **Validates: Requirements 7.2, 7.3, 7.4**
 
-  - [ ] 4.4 Caso de uso GeneratePersonalizedPdf
+  - [x] 4.4 Caso de uso GeneratePersonalizedPdf
     - Busca documento ativo e usuário, gera PDF, salva log antes de retornar, monta `fileName` com CPF parcial
     - _Commit: `feat(api): add generate personalized pdf use case`_
     - _Requirements: 7.1, 7.3, 7.5, 7.6, 7.7, 8.1, 8.2, 8.3, 8.4_
 
-  - [ ]* 4.5 Testes do log de download
+  - [x]* 4.5 Testes do log de download
     - **Property 6: Download Log criado exatamente uma vez por geração bem-sucedida**
     - Caso de falha ao salvar o log (PDF não é retornado)
     - _Commit: `test(api): add download log tests`_
     - **Validates: Requirements 8.1, 8.2, 8.4**
 
-  - [ ] 4.6 Endpoint de download
+  - [x] 4.6 Endpoint de download
     - `GET /documents/:id/pdf` retornando `StreamableFile` com `Content-Type` e `Content-Disposition`
     - _Commit: `feat(api): add pdf download endpoint`_
     - _Requirements: 4.5, 7.1, 7.5, 7.6, 7.7_
@@ -241,19 +241,19 @@ O plano é organizado em **fatias verticais**: cada fatia entrega uma funcionali
     - Perguntar ao usuário se surgirem dúvidas
 
 - [ ] 5. Fatia 4 — Área administrativa
-  - [ ] 5.1 Casos de uso de administração
+  - [x] 5.1 Casos de uso de administração
     - `CreateDocumentUseCase`, `UpdateDocumentUseCase`, `DeleteDocumentUseCase` (soft delete; 404 para inexistente)
     - `ListUsersUseCase` retornando CPF mascarado e sem `passwordHash`
     - _Commit: `feat(api): add admin use cases`_
     - _Requirements: 5.1, 5.2, 5.3, 5.7, 9.1, 9.2, 9.5_
 
-  - [ ] 5.2 Endpoints de administração
+  - [x] 5.2 Endpoints de administração
     - `POST /documents`, `PATCH /documents/:id`, `DELETE /documents/:id` com `@Roles(Role.ADMIN)` e DTOs validados
     - `UserController` com `GET /users` (`@Roles(Role.ADMIN)`) e `UserModule`
     - _Commit: `feat(api): add admin document and user endpoints`_
     - _Requirements: 4.4, 5.1, 5.2, 5.3, 5.6, 5.7, 9.1, 9.3, 9.4_
 
-  - [ ]* 5.3 Testes e2e de autorização
+  - [x]* 5.3 Testes e2e de autorização
     - Supertest + `TestingModule`
     - **Property 7: Isolamento de roles — usuário USER não acessa endpoints ADMIN**
     - Casos 401 (sem token) antes de 403
@@ -281,7 +281,7 @@ O plano é organizado em **fatias verticais**: cada fatia entrega uma funcionali
     - Perguntar ao usuário se surgirem dúvidas
 
 - [ ] 6. Containerização completa
-  - [ ] 6.1 Dockerfile da api (multi-stage)
+  - [x] 6.1 Dockerfile da api (multi-stage)
     - Stage 1: `npm ci`, `nx run api:prisma-generate`, `nx build api --configuration=production` (`generatePackageJson: true`)
     - Stage 2: `node:22-alpine`, copia `dist/apps/api`, `apps/api/prisma/` e `prisma.config.ts`; instala dependências de produção + `prisma` e `dotenv`
     - `CMD` roda `prisma migrate deploy` e depois `node main.js`
@@ -295,7 +295,7 @@ O plano é organizado em **fatias verticais**: cada fatia entrega uma funcionali
     - _Commit: `build(web): add multi-stage dockerfile and nginx config`_
     - _Requirements: 12.3_
 
-  - [ ] 6.3 `.dockerignore`
+  - [x] 6.3 `.dockerignore`
     - Excluir `node_modules`, `dist`, `.nx`, `.git`, `.env`, `coverage`
     - _Commit: `build: add dockerignore`_
     - _Requirements: 12.3, 12.4_
