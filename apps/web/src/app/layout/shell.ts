@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
@@ -67,6 +68,7 @@ const ADMIN_NAV: NavItem[] = [
     MatIconModule,
     MatButtonModule,
     MatMenuModule,
+    MatDividerModule,
     ThemeToggle,
   ],
   template: `
@@ -96,10 +98,11 @@ const ADMIN_NAV: NavItem[] = [
         }
       </button>
       <mat-menu #userMenu="matMenu">
-        <div class="account" mat-menu-item disabled>
-          <span>{{ auth.session()?.email }}</span>
-          <small>{{ roleLabel() }}</small>
+        <div class="account">
+          <span class="account-email">{{ auth.session()?.email }}</span>
+          <span class="role-badge">{{ roleLabel() }}</span>
         </div>
+        <mat-divider />
         <button mat-menu-item type="button" (click)="logout()">
           <mat-icon>logout</mat-icon>
           <span>Sair</span>
@@ -195,7 +198,20 @@ const ADMIN_NAV: NavItem[] = [
     }
     .account {
       display: grid;
-      line-height: 1.3;
+      justify-items: start;
+      gap: 8px;
+      padding: 12px 16px;
+    }
+    .account-email {
+      font: var(--mat-sys-title-small);
+      color: var(--mat-sys-on-surface);
+    }
+    .role-badge {
+      padding: 2px 10px;
+      border-radius: 999px;
+      font: var(--mat-sys-label-medium);
+      background: var(--mat-sys-secondary-container);
+      color: var(--mat-sys-on-secondary-container);
     }
   `,
 })
