@@ -1,1 +1,69 @@
-/* Estilos globais — tema e layout entram na etapa de estilos */
+@use '@angular/material' as mat;
+
+/* Tema base do Angular Material (M3). A identidade visual definitiva entra na etapa de estilos. */
+html {
+  color-scheme: light;
+  @include mat.theme(
+    (
+      color: mat.$azure-palette,
+      typography: Roboto,
+      density: 0,
+    )
+  );
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+}
+
+/* Layout mínimo compartilhado pelas páginas */
+.page {
+  display: grid;
+  gap: 24px;
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.page-header h1 {
+  margin: 0;
+  font: var(--mat-sys-headline-small);
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+.table-scroll table {
+  width: 100%;
+}
+
+.muted {
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.full-width {
+  width: 100%;
+}
+
+@media (max-width: 599px) {
+  .page {
+    padding: 16px;
+  }
+}
