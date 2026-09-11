@@ -258,6 +258,8 @@ Todas as rotas da API ficam sob o prefixo `/api` (ex.: `POST /api/auth/login`). 
 
 Itens registrados para uma versão futura, não fazem parte dos critérios acima:
 
+- **Emissão de certificados** com código de verificação, QR Code e hash: especificada em [`certificate-issuance`](../certificate-issuance/requirements.md).
+
 - **Upload de PDF real:** o ADMIN envia um PDF pronto (apostila) e o Backend carimba o CPF em cada página usando `pdf-lib`, em vez de gerar o PDF a partir de texto com PDFKit. Um novo adaptador de `PdfGeneratorPort` (ou uma porta `PdfStamperPort`) sem alterar os casos de uso.
 - **Tela de logs de download** para o ADMIN (quem baixou o quê e quando).
 - **Refresh token** e armazenamento do token em cookie `httpOnly` em vez de `localStorage`.
