@@ -74,7 +74,7 @@ import { StateMessage } from '../../../shared/ui/state-message';
   `,
   styles: `
     .mono {
-      font-family: 'Roboto Mono', monospace;
+      font-family: var(--app-font-mono);
     }
   `,
 })

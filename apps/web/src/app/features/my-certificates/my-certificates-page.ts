@@ -173,7 +173,7 @@ import { StateMessage } from '../../shared/ui/state-message';
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     }
     .code {
-      font-family: 'Roboto Mono', monospace;
+      font-family: var(--app-font-mono);
       letter-spacing: 0.04em;
       margin: 12px 0 0;
     }

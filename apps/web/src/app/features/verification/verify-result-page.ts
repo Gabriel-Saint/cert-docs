@@ -202,7 +202,7 @@ import { StateMessage } from '../../shared/ui/state-message';
       margin: 0;
     }
     .mono {
-      font-family: 'Roboto Mono', monospace;
+      font-family: var(--app-font-mono);
     }
     .hash {
       word-break: break-all;
