@@ -116,18 +116,18 @@ O plano é organizado em **fatias verticais**: cada fatia entrega uma funcionali
     - _Commit: `feat(api): add auth controller, guards and domain exception filter`_
     - _Requirements: 1.1, 1.2, 1.6, 1.7, 1.9, 3.1, 3.2, 3.3, 3.4, 4.1, 4.2, 4.3_
 
-  - [ ] 2.9 Web: núcleo, Material e shell responsivo
+  - [x] 2.9 Web: núcleo, Material e shell responsivo
     - Instalar e configurar Angular Material (tema) e Angular CDK
     - `AuthService` com signals (`token`, `session`, `isAdmin`, `hasValidToken`, `logout`)
-    - `authInterceptor` (Bearer em endpoints protegidos; 401 → logout + redirect, exceto `/api/auth/*`)
-    - `authGuard` e `roleGuard`
-    - Shell: `mat-toolbar` com links no desktop e `mat-sidenav` com hambúrguer no mobile (`BreakpointObserver`); botão "Sair"; links de admin só com `isAdmin()`
+    - `authInterceptor` (Bearer em endpoints protegidos; 401 → logout + redirect para `/entrar` com `returnUrl`, exceto `/api/auth/*`)
+    - `authGuard`, `guestGuard` e `roleGuard`
+    - Shell: `mat-toolbar` com `mat-sidenav` fixo no desktop e gaveta com hambúrguer no mobile (`BreakpointObserver`); menu da conta com "Sair"; links de admin só com `isAdmin()` (revisão de design de 2026-09-11)
     - _Commit: `feat(web): add auth service, interceptor, guards and responsive shell`_
     - _Requirements: 3.6, 3.7, 3.8, 10.1, 10.5, 10.6, 10.7, 10.9, 11.1, 11.3, 11.5_
 
-  - [ ] 2.10 Web: telas de login e cadastro
-    - Login com Reactive Forms + `mat-form-field`/`matInput`/`mat-button`; erro de credenciais em `mat-error` sem limpar o email; redirect para `/documents`
-    - Cadastro com validador de CPF usando `isValidCpf` da shared; 400/409 exibidos com `MatSnackBar`
+  - [x] 2.10 Web: telas de login e cadastro
+    - Login em `/entrar` com Reactive Forms + `mat-form-field`/`matInput`/`mat-button`; erro de credenciais em alerta no formulário (`role="alert"`) sem limpar o email; redirect para `returnUrl` ou `/documentos`
+    - Cadastro em `/cadastro` com validador de CPF usando `isValidCpf` da shared; 400/409 exibidos no mesmo alerta do formulário; login automático após criar a conta
     - Campos 100% de largura, botões com altura mínima de 44px
     - _Commit: `feat(web): add login and register pages`_
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 2.5, 10.2, 10.3, 10.4, 10.8, 11.4_
@@ -175,8 +175,8 @@ O plano é organizado em **fatias verticais**: cada fatia entrega uma funcionali
     - _Commit: `feat(api): add idempotent database seed`_
     - _Requirements: 13.6_
 
-  - [ ] 3.8 Web: lista de documentos
-    - `DocumentList` com `httpResource`, `mat-spinner` no carregamento, erro com "Tentar novamente", estado vazio
+  - [x] 3.8 Web: lista de documentos
+    - `DocumentsPage` com `rxResource`, `mat-spinner` no carregamento, erro com "Tentar novamente", estado vazio
     - Cards `mat-card` em grid responsivo (1/2/3 colunas)
     - _Commit: `feat(web): add responsive document list`_
     - _Requirements: 6.3, 6.4, 6.5, 6.6, 11.2_
@@ -222,8 +222,8 @@ O plano é organizado em **fatias verticais**: cada fatia entrega uma funcionali
     - _Commit: `feat(api): add pdf download endpoint`_
     - _Requirements: 4.5, 7.1, 7.5, 7.6, 7.7_
 
-  - [ ] 4.7 Web: download do PDF
-    - `DocumentService.downloadPdf` com `observe: 'response'` + `responseType: 'blob'`, lendo o nome do arquivo do `Content-Disposition`
+  - [x] 4.7 Web: download do PDF
+    - `DocumentsApi.downloadPdf` com `observe: 'response'` + `responseType: 'blob'`, lendo o nome do arquivo do `Content-Disposition` (`FileSaver`)
     - Botão desabilitado enquanto baixa
     - _Commit: `feat(web): add personalized pdf download`_
     - _Requirements: 7.8_
@@ -253,17 +253,17 @@ O plano é organizado em **fatias verticais**: cada fatia entrega uma funcionali
     - _Commit: `test(api): add e2e role isolation tests`_
     - **Validates: Requirements 4.1, 4.2, 4.4, 9.3, 9.4**
 
-  - [ ] 5.4 Web: rotas de admin
+  - [x] 5.4 Web: rotas de admin
     - `admin.routes.ts` com lazy loading, protegido por `authGuard` + `roleGuard(Role.ADMIN)`
     - _Commit: `feat(web): add admin routes`_
     - _Requirements: 10.7_
 
-  - [ ] 5.5 Web: gestão de documentos
+  - [x] 5.5 Web: gestão de documentos
     - `mat-table` com documentos, formulário de criação/edição (`mat-form-field`, `matInput`, textarea), `MatDialog` para confirmar exclusão
     - _Commit: `feat(web): add admin document management`_
     - _Requirements: 5.1, 5.2, 5.3, 10.7_
 
-  - [ ] 5.6 Web: lista de usuários
+  - [x] 5.6 Web: lista de usuários
     - `mat-table` com CPF mascarado e role em `mat-chip`
     - _Commit: `feat(web): add admin user list`_
     - _Requirements: 9.1, 9.2_

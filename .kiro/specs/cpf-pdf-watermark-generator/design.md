@@ -8,7 +8,7 @@ Sistema web para geração de PDFs personalizados com o CPF do usuário inserido
 
 | Camada | Tecnologia |
 |---|---|
-| Frontend | Angular 21 (Standalone, Signals, `httpResource`, Control Flow, Angular Material, zoneless) |
+| Frontend | Angular 22 (Standalone, Signals, `rxResource`, Control Flow, Angular Material M3, zoneless) |
 | Backend | NestJS (arquitetura hexagonal) |
 | Banco de dados | PostgreSQL 16 |
 | ORM | Prisma 7 (`prisma.config.ts`, generator `prisma-client`, adapter `@prisma/adapter-pg`) |
@@ -18,6 +18,21 @@ Sistema web para geração de PDFs personalizados com o CPF do usuário inserido
 | Testes | Jest (api), Vitest (web e shared), fast-check (property tests), Supertest (e2e) |
 | Containerização | Docker + Docker Compose |
 | Runtime | Node.js 22 LTS |
+
+### Revisões do design (2026-09-11)
+
+Decisões alteradas durante a implementação do frontend. Os requisitos 3.7, 10.1, 10.3, 10.6, 10.8, 10.9 e 11.3 foram atualizados para refletir esta tabela.
+
+| Item | Antes | Agora | Motivo |
+|---|---|---|---|
+| Versão | Angular 21 | Angular 22.1 | Versão estável na criação do workspace |
+| Leitura de dados | `httpResource` | `rxResource` sobre serviços em `data-access/` | Os mesmos serviços fazem download de blob lendo headers; um só modelo de acesso HTTP, testável com `HttpTestingController` |
+| Rotas | `/auth/login`, `/auth/register`, `/documents` | `/entrar`, `/cadastro`, `/documentos` | URLs em português, coerentes com `/cursos`, `/meus-certificados` e `/verificar` da spec de certificados |
+| Retorno após login | Sempre `/documents` | `returnUrl` interno válido ou `/documentos` | Volta para a página que exigiu login, sem permitir redirecionamento externo |
+| Navegação no desktop | Links na `mat-toolbar` | `mat-sidenav` fixo | A área admin tem cinco itens e cresce com certificados; menu lateral escala melhor |
+| Erros de login e cadastro | `mat-error` e `MatSnackBar` | Alerta no topo do formulário (`role="alert"`) com a mensagem da API | A mensagem fica junto dos campos e é lida por leitores de tela; `mat-error` segue nas validações de cada campo |
+
+Os exemplos de código deste documento que usam `/auth/login` mostram a estrutura dos guards e do interceptor; as rotas vigentes são as da tabela. Ajustes visuais posteriores (tema, tipografia, busca em tempo real) estão em `.kiro/specs/web-ui-refinements/`.
 
 ---
 

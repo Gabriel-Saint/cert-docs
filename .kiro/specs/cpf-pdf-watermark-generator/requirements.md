@@ -6,17 +6,17 @@ Sistema web para geração de PDFs personalizados com a marca d'água do CPF do 
 
 Construído como monorepo Nx com:
 
-- `apps/web` — Angular 21 (Standalone Components, Signals, Angular Material)
+- `apps/web` — Angular 22 (Standalone Components, Signals, Angular Material)
 - `apps/api` — NestJS com arquitetura hexagonal, PostgreSQL, Prisma 7, PDFKit e autenticação JWT
 - `libs/shared` — tipos, enums, contratos da API e funções puras de CPF, sem dependências externas
 
-Todas as rotas da API ficam sob o prefixo `/api` (ex.: `POST /api/auth/login`). Rotas sem esse prefixo (ex.: `/auth/login`, `/documents`) referem-se a rotas do Angular no navegador. Nos critérios abaixo, os endpoints são escritos sem o prefixo por brevidade quando o contexto é o Backend.
+Todas as rotas da API ficam sob o prefixo `/api` (ex.: `POST /api/auth/login`). Rotas sem esse prefixo (ex.: `/entrar`, `/documentos`) referem-se a rotas do Angular no navegador, em português. Nos critérios abaixo, os endpoints são escritos sem o prefixo por brevidade quando o contexto é o Backend.
 
 ## Glossary
 
 - **System**: O sistema completo CertDocs (web + api).
 - **Backend**: A aplicação NestJS em `apps/api`, com arquitetura hexagonal.
-- **Frontend**: A aplicação Angular 21 em `apps/web`, com Standalone Components, Signals e Angular Material.
+- **Frontend**: A aplicação Angular 22 em `apps/web`, com Standalone Components, Signals e Angular Material.
 - **Shared_Lib**: A biblioteca `libs/shared` (alias `@cert-docs/shared`), importada pelo Backend e pelo Frontend.
 - **CPF_Validator**: O Value Object `Cpf` do domínio, apoiado nas funções puras de CPF da Shared_Lib.
 - **PDF_Generator**: O adaptador `PdfKitGeneratorAdapter` que implementa `PdfGeneratorPort` e produz buffers PDF.
@@ -81,7 +81,7 @@ Todas as rotas da API ficam sob o prefixo `/api` (ex.: `POST /api/auth/login`). 
 4. IF uma requisição é feita a um endpoint protegido com um token JWT expirado, malformado ou com assinatura inválida, THEN THE JWT_Guard SHALL rejeitar a requisição com HTTP 401.
 5. THE System SHALL configurar tokens JWT com tempo de expiração máximo de 24 horas.
 6. WHILE o usuário possui um token JWT válido e não expirado, THE Frontend SHALL incluir automaticamente o cabeçalho `Authorization: Bearer <token>` em todas as requisições a endpoints protegidos.
-7. WHEN o Frontend recebe HTTP 401 de um endpoint protegido (qualquer endpoint exceto `/api/auth/login` e `/api/auth/register`), THE Frontend SHALL remover o token do `localStorage` e redirecionar o usuário para a rota `/auth/login`.
+7. WHEN o Frontend recebe HTTP 401 de um endpoint protegido (qualquer endpoint exceto `/api/auth/login` e `/api/auth/register`), THE Frontend SHALL remover o token do `localStorage` e redirecionar o usuário para a rota `/entrar`, guardando a página atual em `returnUrl`.
 8. WHEN o Frontend recebe HTTP 401 de `/api/auth/login`, THE Frontend SHALL NOT redirecionar e SHALL repassar o erro ao formulário de login para exibição da mensagem (ver 10.4).
 
 ---
@@ -181,15 +181,15 @@ Todas as rotas da API ficam sob o prefixo `/api` (ex.: `POST /api/auth/login`). 
 
 #### Acceptance Criteria
 
-1. WHEN um usuário não autenticado tenta acessar rotas protegidas no Frontend, THE Frontend SHALL redirecionar para `/auth/login`.
+1. WHEN um usuário não autenticado tenta acessar rotas protegidas no Frontend, THE Frontend SHALL redirecionar para `/entrar`, guardando a rota pedida em `returnUrl`.
 2. WHEN um usuário preenche email e senha válidos no formulário de login e submete, THE Frontend SHALL enviar as credenciais ao backend e armazenar o token JWT retornado no `localStorage`. O formulário SHALL usar componentes Angular Material (`mat-form-field`, `matInput`, `mat-button`).
-3. WHEN o login é bem-sucedido, THE Frontend SHALL redirecionar o usuário para a rota `/documents`.
+3. WHEN o login é bem-sucedido, THE Frontend SHALL redirecionar o usuário para o `returnUrl` quando for uma rota interna válida, ou para `/documentos` caso contrário.
 4. IF o login falhar por credenciais inválidas, THEN THE Frontend SHALL exibir uma mensagem de erro indicando que as credenciais são inválidas sem limpar o campo de email.
 5. WHEN um usuário autenticado tenta acessar uma rota protegida, THE Frontend SHALL verificar a presença de um token JWT válido no `localStorage` antes de permitir o acesso.
-6. IF o token JWT armazenado estiver ausente ou expirado ao tentar acessar uma rota protegida, THEN THE Frontend SHALL remover o token do `localStorage` e redirecionar o usuário para `/auth/login`.
+6. IF o token JWT armazenado estiver ausente ou expirado ao tentar acessar uma rota protegida, THEN THE Frontend SHALL remover o token do `localStorage` e redirecionar o usuário para `/entrar`.
 7. WHERE o usuário possui role `ADMIN`, THE Frontend SHALL exibir rotas e funcionalidades administrativas adicionais (gestão de documentos e listagem de usuários).
-8. THE Frontend SHALL oferecer uma tela de cadastro em `/auth/register`, validando o CPF no cliente com a mesma função da Shared_Lib usada pelo Backend.
-9. WHEN o usuário aciona "Sair", THE Frontend SHALL remover o token do `localStorage` e redirecionar para `/auth/login`.
+8. THE Frontend SHALL oferecer uma tela de cadastro em `/cadastro`, validando o CPF no cliente com a mesma função da Shared_Lib usada pelo Backend.
+9. WHEN o usuário aciona "Sair", THE Frontend SHALL remover o token do `localStorage` e redirecionar para `/entrar`.
 
 ---
 
@@ -201,7 +201,7 @@ Todas as rotas da API ficam sob o prefixo `/api` (ex.: `POST /api/auth/login`). 
 
 1. WHEN o usuário acessa o sistema em uma tela com largura menor que 600px (mobile), THE Frontend SHALL adaptar o layout para uma coluna única, ocultando elementos secundários e garantindo que todos os controles sejam acessíveis por toque.
 2. WHEN a lista de documentos é exibida, THE Frontend SHALL usar Angular CDK BreakpointObserver ou CSS Grid/Flexbox para renderizar os cards em 1 coluna em mobile, 2 colunas em tablet (600px–959px) e 3 colunas em desktop (≥960px).
-3. WHEN o usuário acessa o sistema em dispositivo mobile, THE Frontend SHALL substituir a navegação horizontal por um `mat-sidenav` acionado por menu hambúrguer na `mat-toolbar`.
+3. THE Frontend SHALL exibir a navegação em um `mat-sidenav` fixo ao lado do conteúdo em telas com 960px ou mais, e como gaveta acionada por menu hambúrguer na `mat-toolbar` em telas menores.
 4. WHEN formulários são exibidos em mobile, THE Frontend SHALL garantir que todos os campos `mat-form-field` ocupem 100% da largura disponível e que o botão de ação seja facilmente clicável (altura mínima de 44px).
 5. THE Frontend SHALL garantir que nenhum conteúdo seja cortado ou exija scroll horizontal em qualquer tamanho de tela padrão (320px ou maior).
 

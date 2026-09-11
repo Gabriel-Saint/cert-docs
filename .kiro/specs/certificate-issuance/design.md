@@ -529,6 +529,8 @@ Todos os erros de domínio seguem o formato `{ statusCode, code, message }` já 
 | `/verificar` | público | Campo para digitar o código |
 | `/verificar/:code` | público | Resultado da verificação e conferência de arquivo |
 
+As rotas de verificação usam o cabeçalho público para visitantes e são exibidas dentro do shell para usuários logados, na mesma URL (decisão em `web-ui-refinements/design.md`).
+
 ### Estados da verificação
 
 | Estado | Apresentação |

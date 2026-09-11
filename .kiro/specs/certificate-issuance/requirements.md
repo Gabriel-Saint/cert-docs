@@ -160,7 +160,7 @@ Depende da v1: autenticação JWT, roles `USER`/`ADMIN`, arquitetura hexagonal d
 4. THE System SHALL aceitar o código com ou sem hífens e em letras maiúsculas ou minúsculas, normalizando antes da busca.
 5. THE System SHALL nunca expor na verificação pública o CPF completo, o email, o arquivo PDF nem dados de quem aprovou.
 6. THE System SHALL limitar a 30 requisições por minuto por IP os endpoints públicos de verificação, retornando HTTP 429 quando excedido.
-7. THE Frontend SHALL oferecer a Verification_Page em `/verificar` (campo para digitar o código) e `/verificar/:code` (resultado direto, usado pelo QR Code), acessíveis sem login.
+7. THE Frontend SHALL oferecer a Verification_Page em `/verificar` (campo para digitar o código) e `/verificar/:code` (resultado direto, usado pelo QR Code), acessíveis sem login. Para usuários autenticados, as mesmas URLs são exibidas dentro do shell (revisado em `web-ui-refinements`, Requirement 5).
 
 ---
 
@@ -187,7 +187,7 @@ Depende da v1: autenticação JWT, roles `USER`/`ADMIN`, arquitetura hexagonal d
 2. THE Frontend SHALL oferecer ao USER a tela "Meus certificados", com pedidos (status e motivo de recusa) e certificados emitidos (baixar PDF, copiar link de verificação).
 3. THE Frontend SHALL oferecer ao ADMIN a tela "Cursos" com criação, edição e desativação, incluindo edição dos módulos em lista ordenável e total de horas calculado em tempo real.
 4. THE Frontend SHALL oferecer ao ADMIN a tela "Pedidos" com filtro por status e ações "Aprovar" (com datas do curso) e "Recusar" (com motivo), ambas com confirmação.
-5. THE Frontend SHALL oferecer ao ADMIN a tela "Certificados emitidos" com os filtros do Requirement 7, detalhe do certificado, download do PDF e ação "Revogar" com motivo e confirmação.
+5. THE Frontend SHALL oferecer ao ADMIN a tela "Certificados emitidos" com os filtros do Requirement 7 aplicados em tempo real (detalhado em `web-ui-refinements`, Requirement 4), detalhe do certificado, download do PDF e ação "Revogar" com motivo e confirmação.
 6. THE Frontend SHALL seguir o layout responsivo e os componentes Angular Material definidos na v1.
 
 ---

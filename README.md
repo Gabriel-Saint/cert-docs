@@ -2,7 +2,7 @@
 
 Sistema para distribuir materiais restritos (apostilas, cursos) em PDF com o **CPF e o nome de quem baixou carimbados no cabeçalho e no rodapé de todas as páginas**. Se o arquivo vazar, dá para saber de onde veio — e cada download fica registrado.
 
-> **Status:** API completa (documentos com CPF carimbado e emissão de certificados) · frontend Angular em desenvolvimento
+> **Status:** API e frontend Angular completos (documentos com CPF carimbado e emissão de certificados) · pendentes: imagem Docker do frontend e validação final dos checkpoints
 
 ## Planejamento
 
@@ -14,7 +14,9 @@ O projeto foi planejado com **spec-driven development** usando o [Kiro](https://
 
 Os testes baseados em propriedades (fast-check) implementam diretamente as _correctness properties_ definidas no design.
 
-**Segunda feature:** [emissão de certificados](.kiro/specs/certificate-issuance/requirements.md) no estilo diploma, com código de verificação, QR Code, hash e página pública de verificação — especificada com o mesmo processo e já implementada na API.
+**Segunda feature:** [emissão de certificados](.kiro/specs/certificate-issuance/requirements.md) no estilo diploma, com código de verificação, QR Code, hash e página pública de verificação — especificada com o mesmo processo e implementada na API e no frontend.
+
+**Ajustes de interface:** [tema claro e escuro, tipografia sem serviços de terceiros, busca em tempo real e navegação](.kiro/specs/web-ui-refinements/requirements.md). Essa spec foi escrita depois da implementação e está marcada como retroativa; os desvios de rotas e layout em relação às specs originais estão registrados nelas.
 
 ## Stack
 

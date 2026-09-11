@@ -65,7 +65,7 @@ Pré-requisitos da v1: autenticação JWT e roles, `DomainExceptionFilter`, Swag
     - _Commit: `feat(api): expõe endpoints de cursos`_
     - _Requirements: 1.1, 1.2, 1.4, 1.5, 1.6, 1.7_
 
-  - [ ] 2.4 Web: cursos
+  - [x] 2.4 Web: cursos
     - Tela do aluno `/cursos` com conteúdo programático
     - Tela do admin `/admin/cursos`: lista, formulário com editor de módulos ordenável e total de horas em tempo real, desativação com confirmação
     - _Commit: `feat(web): adiciona telas de cursos`_
@@ -90,7 +90,7 @@ Pré-requisitos da v1: autenticação JWT e roles, `DomainExceptionFilter`, Swag
     - _Commit: `feat(api): expõe endpoints de pedidos de certificado`_
     - _Requirements: 2.1, 2.5, 2.6, 3.1, 3.3, 3.7_
 
-  - [ ] 3.3 Web: pedidos
+  - [x] 3.3 Web: pedidos
     - Botão "Solicitar certificado" em `/cursos` com estado desabilitado
     - `/meus-certificados` com a lista de pedidos, status e motivo de recusa
     - `/admin/pedidos` com filtro por status e ação "Recusar" com motivo
@@ -157,7 +157,7 @@ Pré-requisitos da v1: autenticação JWT e roles, `DomainExceptionFilter`, Swag
     - _Commit: `feat(api): expõe emissão, download e histórico de certificados`_
     - _Requirements: 3.2, 6.1, 6.2, 6.3, 7.1, 7.2, 7.3, 7.4_
 
-  - [ ] 5.5 Web: emissão, meus certificados e histórico
+  - [x] 5.5 Web: emissão, meus certificados e histórico
     - Ação "Aprovar" em `/admin/pedidos` com datas e confirmação
     - Certificados emitidos em `/meus-certificados` com download e "copiar link de verificação"
     - `/admin/certificados` com filtros, paginação, detalhe e download
@@ -170,9 +170,9 @@ Pré-requisitos da v1: autenticação JWT e roles, `DomainExceptionFilter`, Swag
     - Perguntar ao usuário se surgirem dúvidas
 
 - [ ] 6. Fatia 5 — Revogação e verificação pública
-  - [ ] 6.1 Revogação
+  - [x] 6.1 Revogação
     - [x] API: `RevokeCertificateUseCase` e endpoint `POST /certificates/:id/revoke`
-    - Ação "Revogar" com motivo e confirmação em `/admin/certificados`
+    - [x] Web: ação "Revogar" com motivo e confirmação em `/admin/certificados`
     - _Commit: `feat: adiciona revogação de certificados`_
     - _Requirements: 8.1, 8.2, 8.3, 8.4, 11.5_
 
@@ -191,8 +191,8 @@ Pré-requisitos da v1: autenticação JWT e roles, `DomainExceptionFilter`, Swag
     - _Commit: `test(api): adiciona testes da verificação pública`_
     - **Validates: Requirements 8.1, 8.2, 9.2, 9.5, 9.6, 10.1**
 
-  - [ ] 6.4 Web: página de verificação
-    - Rotas públicas `/verificar` e `/verificar/:code` fora do shell autenticado
+  - [x] 6.4 Web: página de verificação
+    - Rotas `/verificar` e `/verificar/:code` sem login: com cabeçalho público para visitantes e dentro do shell para usuários logados (revisado em `web-ui-refinements`, tarefa 5)
     - Estados válido, revogado e não encontrado; envio do PDF para conferência
     - _Commit: `feat(web): adiciona página pública de verificação`_
     - _Requirements: 9.7, 10.4_
