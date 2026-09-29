@@ -4,6 +4,7 @@ export interface TokenPayload {
   sub: string;
   email: string;
   role: Role;
+  exp?: number;
 }
 
 export interface TokenPort {

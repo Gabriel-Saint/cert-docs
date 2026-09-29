@@ -2,8 +2,10 @@ import type { LoginRequest, RegisterRequest } from '@cert-docs/shared';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
+  IsBoolean,
   IsEmail,
   IsNotEmpty,
+  IsOptional,
   IsString,
   Length,
   MaxLength,
@@ -59,4 +61,11 @@ export class LoginDto implements LoginRequest {
   @IsString()
   @IsNotEmpty()
   password!: string;
+}
+
+export class BrowserLoginDto extends LoginDto {
+  @ApiProperty({ default: false })
+  @IsOptional()
+  @IsBoolean()
+  rememberMe = false;
 }

@@ -3,6 +3,7 @@
  * Os contratos da libs/shared são interfaces (somem em runtime), e o Swagger precisa de classes.
  */
 import {
+  type AuthSession,
   type DocumentDetail,
   type DocumentSummary,
   type LoginResponse,
@@ -40,6 +41,24 @@ export class LoginResponseDto implements LoginResponse {
     example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
   })
   accessToken!: string;
+}
+
+export class AuthSessionDto implements AuthSession {
+  @ApiProperty({ example: 'cmtwaxakk0000jod4msdn5h4h' })
+  userId!: string;
+
+  @ApiProperty({ example: 'joao@example.com' })
+  email!: string;
+
+  @ApiProperty({ enum: Object.values(Role), example: Role.USER })
+  role!: Role;
+
+  @ApiProperty({
+    type: Number,
+    description: 'Expiração da sessão em milissegundos desde a época Unix',
+    example: 1790647200000,
+  })
+  expiresAt!: number;
 }
 
 export class DocumentSummaryDto implements DocumentSummary {

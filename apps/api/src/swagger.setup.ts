@@ -16,6 +16,8 @@ API para distribuição de materiais em PDF com o **CPF e o nome do usuário car
 3. Clique em **Authorize** e cole o token.
 4. Chame as rotas protegidas — em **GET /api/documents/{id}/pdf** aparece o link para baixar o arquivo.
 
+O frontend usa **POST /api/auth/session/login**, que define um cookie HttpOnly e não devolve o JWT ao JavaScript. \`GET /api/auth/session\` restaura a sessão e \`DELETE /api/auth/session\` encerra. Integrações externas continuam usando \`POST /api/auth/login\` com Bearer.
+
 ### Erros de negócio
 Seguem o formato \`{ statusCode, code, message }\`, onde \`code\` identifica o erro (ex.: \`EMAIL_OR_CPF_IN_USE\`).
 Erros de validação do body retornam \`message\` como lista de campos inválidos.
@@ -36,6 +38,12 @@ export function setupSwagger(app: INestApplication): void {
       },
       SWAGGER_BEARER_AUTH,
     )
+    .addCookieAuth('certdocs_session', {
+      type: 'apiKey',
+      in: 'cookie',
+      name: 'certdocs_session',
+      description: 'Cookie HttpOnly emitido por POST /api/auth/session/login',
+    }, 'web-session')
     .addTag('auth', 'Cadastro e login')
     .addTag(
       'documents',

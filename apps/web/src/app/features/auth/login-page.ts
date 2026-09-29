@@ -12,7 +12,9 @@ import {
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { Router, RouterLink } from '@angular/router';
@@ -28,7 +30,9 @@ import { ThemeToggle } from '../../shared/ui/theme-toggle';
     ReactiveFormsModule,
     RouterLink,
     MatCardModule,
+    MatCheckboxModule,
     MatFormFieldModule,
+    MatIconModule,
     MatInputModule,
     MatButtonModule,
     MatProgressBarModule,
@@ -70,14 +74,33 @@ import { ThemeToggle } from '../../shared/ui/theme-toggle';
             <input
               matInput
               id="login-password"
-              type="password"
+              [type]="passwordVisible() ? 'text' : 'password'"
               formControlName="password"
               autocomplete="current-password"
             />
+            <button
+              mat-icon-button
+              matSuffix
+              id="login-password-toggle"
+              type="button"
+              [attr.aria-label]="
+                passwordVisible() ? 'Ocultar senha' : 'Mostrar senha'
+              "
+              [attr.aria-pressed]="passwordVisible()"
+              (click)="passwordVisible.update((visible) => !visible)"
+            >
+              <mat-icon aria-hidden="true">
+                {{ passwordVisible() ? 'visibility_off' : 'visibility' }}
+              </mat-icon>
+            </button>
             @if (form.controls.password.hasError('required')) {
               <mat-error>Informe a senha.</mat-error>
             }
           </mat-form-field>
+
+          <mat-checkbox formControlName="rememberMe">
+            Manter conectado
+          </mat-checkbox>
 
           <button
             mat-flat-button
@@ -110,10 +133,12 @@ export class LoginPage {
 
   protected readonly submitting = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
+  protected readonly passwordVisible = signal(false);
 
   protected readonly form = inject(NonNullableFormBuilder).group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required],
+    rememberMe: false,
   });
 
   protected submit(): void {
@@ -124,7 +149,8 @@ export class LoginPage {
     this.submitting.set(true);
     this.errorMessage.set(null);
 
-    this.auth.login(this.form.getRawValue()).subscribe({
+    const { email, password, rememberMe } = this.form.getRawValue();
+    this.auth.login({ email, password }, rememberMe).subscribe({
       next: () =>
         void this.router.navigateByUrl(safeReturnUrl(this.returnUrl())),
       error: async (error: unknown) => {

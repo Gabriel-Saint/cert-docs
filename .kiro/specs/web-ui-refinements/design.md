@@ -125,6 +125,18 @@ O topo do `mat-menu` da conta é um bloco comum (não `mat-menu-item`, que forç
 
 O `mat-card` já é flex em coluna; `mat-card-content { flex: 1 }` nas páginas de documentos, cursos e meus certificados empurra `mat-card-actions` para o rodapé.
 
+## Login e persistência da sessão (Requirement 8)
+
+- O campo de senha usa um botão `mat-icon-button` no sufixo do `mat-form-field`, com `visibility`/`visibility_off`, `type="button"` e `aria-label` dinâmico. O estado de visibilidade é local à tela e não muda o valor do controle.
+- A opção `Manter conectado` é um checkbox independente, desmarcado por padrão. O formulário envia email, senha e a preferência a `POST /api/auth/session/login`; a senha nunca é persistida.
+- A API cria uma sessão web emitindo JWT exclusivamente num cookie `HttpOnly; SameSite=Lax; Path=/api`, com `Secure` em produção. Sem lembrar, o cookie não tem `Max-Age`; marcado, dura no máximo as 24 horas já definidas para o JWT.
+- O endpoint web de login retorna apenas metadados de sessão (id/email/role/expiração), nunca o JWT. `GET /api/auth/session` valida o cookie e restaura a identidade; `DELETE /api/auth/session` remove o cookie.
+- A estratégia JWT aceita cookie web ou `Authorization: Bearer`, preservando os clientes externos. CORS usa a origem configurada do frontend e credenciais, sem wildcard.
+- O Angular consulta a sessão durante o bootstrap; o interceptor envia credenciais apenas à API e não mantém token em `localStorage` ou `sessionStorage`. Storage legado de tokens é removido.
+- O JWT permanece válido por 24 horas; o cookie persistente não estende essa validade. Refresh-token rotativo não faz parte desta tarefa.
+- Como o JWT é stateless, logout remove o cookie deste navegador, mas não revoga cópias eventualmente roubadas até a expiração. Revogação imediata e sessões lembradas por mais de 24 horas exigiriam sessões opacas no servidor ou refresh tokens rotativos.
+- Com `SameSite=Lax`, o frontend e a API devem ser same-site (como no proxy `/api` de desenvolvimento ou atrás do mesmo domínio/site em produção); domínios cross-site exigiriam uma política de cookie e CORS diferente.
+
 ---
 
 ## Testing Strategy
@@ -134,5 +146,6 @@ O `mat-card` já é flex em coluna; `mat-card-content { flex: 1 }` nas páginas 
 | `ThemeService` | Unit | Vitest | Padrão `system`, restauração da escolha, valor inválido, troca de classes e remoção da chave |
 | Rotas de verificação | Unit | Vitest + `RouterTestingHarness` | Visitante sem Shell; logado dentro do Shell em `/verificar` e `/verificar/:code` |
 | Busca em tempo real | Unit | Vitest + `HttpTestingController` | Uma requisição após a digitação, data sem espera, sem requisição repetida |
+| Sessão web | Unit + e2e | Vitest + `HttpTestingController` + Supertest | Visibilidade, cookie HttpOnly e atributos, sessão temporária/persistente, restauração, logout, Bearer externo e CORS |
 | Tema, fontes e ícones | Manual assistido | Playwright (script local) | Três modos de tema, zero Third_Party_Host, todos os ícones renderizados como glifo |
 | Busca no navegador | Manual assistido | Playwright (script local) | Digitação letra a letra gera uma consulta; "Limpar filtros" restaura a lista |

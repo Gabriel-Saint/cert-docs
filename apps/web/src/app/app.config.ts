@@ -20,6 +20,7 @@ import {
   withInMemoryScrolling,
 } from '@angular/router';
 import { appRoutes } from './app.routes';
+import { AuthService } from './core/auth/auth-service';
 import { authInterceptor } from './core/auth/auth-interceptor';
 import { ThemeService } from './core/theme/theme-service';
 import { PtBrPaginatorIntl } from './shared/ui/pt-br-paginator-intl';
@@ -35,7 +36,7 @@ export const appConfig: ApplicationConfig = {
       withComponentInputBinding(),
       withInMemoryScrolling({ scrollPositionRestoration: 'top' }),
     ),
-    // Token JWT nas chamadas à API e saída automática quando a sessão expira
+    // Cookie HttpOnly nas chamadas à API; o JWT não fica acessível ao JavaScript
     provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
     // Datas, números e moedas no formato brasileiro
     { provide: LOCALE_ID, useValue: 'pt-BR' },
@@ -47,6 +48,7 @@ export const appConfig: ApplicationConfig = {
       );
       // Mantém a classe de tema do <html> em sincronia com a escolha salva
       inject(ThemeService);
+      return inject(AuthService).restoreSession();
     }),
   ],
 };

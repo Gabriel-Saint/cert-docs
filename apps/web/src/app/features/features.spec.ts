@@ -11,7 +11,6 @@ import type {
   MyCertificateRequestView,
   MyCertificateView,
 } from '@cert-docs/shared';
-import { makeToken } from '../testing/tokens';
 import { LoginPage } from './auth/login-page';
 import { CourseFormDialog } from './admin/courses/course-form-dialog';
 import { certificateStateFor } from './courses/certificate-state';
@@ -132,13 +131,16 @@ describe('LoginPage', () => {
     };
   }
 
-  afterEach(() => localStorage.clear());
+  afterEach(() => {
+    localStorage.clear();
+    sessionStorage.clear();
+  });
 
   it('não chama a API com o formulário inválido', async () => {
     const { root, httpMock, fixture } = await setup();
     clickButton(root, 'Entrar');
     await fixture.whenStable();
-    httpMock.expectNone('/api/auth/login');
+    httpMock.expectNone('/api/auth/session/login');
     expect(root.textContent).toContain('Informe o email.');
   });
 
@@ -148,14 +150,72 @@ describe('LoginPage', () => {
     typeInto(root, '#login-password', 'segredo123');
     clickButton(root, 'Entrar');
 
-    const call = httpMock.expectOne('/api/auth/login');
+    const call = httpMock.expectOne('/api/auth/session/login');
     expect(call.request.body).toEqual({
       email: 'maria@example.com',
       password: 'segredo123',
+      rememberMe: false,
     });
-    call.flush({ accessToken: makeToken() });
+    const session = {
+      userId: 'user-1',
+      email: 'maria@example.com',
+      role: 'USER',
+      expiresAt: Date.now() + 60_000,
+    };
+    call.flush(session);
 
     expect(navigate).toHaveBeenCalledWith('/meus-certificados');
+    expect(localStorage.getItem('cert-docs.access-token')).toBeNull();
+    expect(sessionStorage.getItem('cert-docs.access-token')).toBeNull();
+  });
+
+  it('alterna a visibilidade da senha sem alterar o valor', async () => {
+    const { root, fixture } = await setup();
+    typeInto(root, '#login-password', 'segredo123');
+    const password = root.querySelector<HTMLInputElement>('#login-password');
+    const toggle = root.querySelector<HTMLButtonElement>(
+      '#login-password-toggle',
+    );
+
+    expect(password?.type).toBe('password');
+    expect(toggle?.getAttribute('aria-label')).toBe('Mostrar senha');
+    toggle?.click();
+    fixture.detectChanges();
+    expect(password?.type).toBe('text');
+    expect(password?.value).toBe('segredo123');
+    expect(toggle?.getAttribute('aria-label')).toBe('Ocultar senha');
+    toggle?.click();
+    fixture.detectChanges();
+    expect(password?.type).toBe('password');
+  });
+
+  it('envia a escolha de manter conectado sem gravar o token no navegador', async () => {
+    const { root, httpMock, fixture } = await setup();
+    typeInto(root, '#login-email', 'maria@example.com');
+    typeInto(root, '#login-password', 'segredo123');
+    const remember = root.querySelector<HTMLInputElement>(
+      'mat-checkbox input[type="checkbox"]',
+    );
+    expect(remember?.checked).toBe(false);
+    remember?.click();
+    fixture.detectChanges();
+    clickButton(root, 'Entrar');
+
+    const call = httpMock.expectOne('/api/auth/session/login');
+    expect(call.request.body).toEqual({
+      email: 'maria@example.com',
+      password: 'segredo123',
+      rememberMe: true,
+    });
+    call.flush({
+      userId: 'user-1',
+      email: 'maria@example.com',
+      role: 'USER',
+      expiresAt: Date.now() + 60_000,
+    });
+
+    expect(localStorage.getItem('cert-docs.access-token')).toBeNull();
+    expect(sessionStorage.getItem('cert-docs.access-token')).toBeNull();
   });
 
   it('mostra o erro da API, mantém o email e limpa a senha', async () => {
@@ -164,7 +224,7 @@ describe('LoginPage', () => {
     typeInto(root, '#login-password', 'errada');
     clickButton(root, 'Entrar');
 
-    httpMock.expectOne('/api/auth/login').flush(
+    httpMock.expectOne('/api/auth/session/login').flush(
       {
         statusCode: 401,
         code: 'INVALID_CREDENTIALS',

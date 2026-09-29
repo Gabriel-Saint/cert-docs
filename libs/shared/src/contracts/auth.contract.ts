@@ -16,6 +16,17 @@ export interface LoginResponse {
   accessToken: string;
 }
 
+export interface BrowserLoginRequest extends LoginRequest {
+  rememberMe: boolean;
+}
+
+export interface AuthSession {
+  userId: string;
+  email: string;
+  role: Role;
+  expiresAt: number;
+}
+
 export interface PublicUser {
   id: string;
   name: string;

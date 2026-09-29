@@ -104,6 +104,8 @@ describe('API (e2e)', () => {
       expect(Object.keys(spec.paths).sort()).toEqual([
         '/api/auth/login',
         '/api/auth/register',
+        '/api/auth/session',
+        '/api/auth/session/login',
         '/api/certificate-requests',
         '/api/certificate-requests/{id}/approve',
         '/api/certificate-requests/{id}/reject',
@@ -125,9 +127,13 @@ describe('API (e2e)', () => {
       expect(spec.components.securitySchemes).toHaveProperty(
         SWAGGER_BEARER_AUTH,
       );
+      expect(spec.components.securitySchemes).toHaveProperty('web-session');
       // rotas protegidas exigem o token; login e cadastro não
       expect(spec.paths['/api/users']['get'].security).toEqual([
         { [SWAGGER_BEARER_AUTH]: [] },
+      ]);
+      expect(spec.paths['/api/auth/session']['get'].security).toEqual([
+        { 'web-session': [] },
       ]);
       expect(spec.paths['/api/auth/login']['post'].security).toBeUndefined();
     });
@@ -181,6 +187,90 @@ describe('API (e2e)', () => {
       await login('maria@example.com', 'senha-errada').expect(401);
     });
 
+    it('cria e restaura sessão web sem retornar o JWT no body', async () => {
+      const server = app.getHttpServer();
+      const response = await request(server)
+        .post('/api/auth/session/login')
+        .send({
+          email: 'maria@example.com',
+          password: 'senha12345',
+          rememberMe: true,
+        })
+        .expect(200);
+
+      const cookie = (response.headers['set-cookie'] as string[])[0];
+      expect(cookie).toContain('certdocs_session=');
+      expect(cookie).toContain('HttpOnly');
+      expect(cookie).toContain('SameSite=Lax');
+      expect(cookie).toContain('Path=/api');
+      expect(cookie).toContain('Max-Age=86400');
+      expect(response.body).not.toHaveProperty('accessToken');
+      expect(response.body).toMatchObject({
+        userId: expect.any(String),
+        email: 'maria@example.com',
+        role: Role.USER,
+        expiresAt: expect.any(Number),
+      });
+
+      const sessionCookie = cookie.split(';')[0];
+      await request(server)
+        .get('/api/auth/session')
+        .set('Cookie', sessionCookie)
+        .expect(200)
+        .expect(({ body }) => expect(body.email).toBe('maria@example.com'));
+      await request(server)
+        .get('/api/documents')
+        .set('Cookie', sessionCookie)
+        .expect(200);
+      await request(server)
+        .post('/api/auth/login')
+        .set('Cookie', sessionCookie)
+        .set('Origin', 'http://localhost:3000')
+        .send({ email: 'maria@example.com', password: 'senha12345' })
+        .expect(200)
+        .expect(({ body }) => expect(body.accessToken).toEqual(expect.any(String)));
+      await request(server)
+        .post('/api/certificate-requests')
+        .set('Cookie', sessionCookie)
+        .set('Origin', 'https://evil.example')
+        .send({ courseId: 'course-1' })
+        .expect(403);
+
+      const logout = await request(server)
+        .delete('/api/auth/session')
+        .set('Cookie', sessionCookie)
+        .set('Origin', 'http://localhost:4200')
+        .expect(204);
+      expect(logout.headers['set-cookie'][0]).toContain('certdocs_session=;');
+    });
+
+    it('emite cookie de sessão sem persistência quando lembrar está desmarcado', async () => {
+      const response = await request(app.getHttpServer())
+        .post('/api/auth/session/login')
+        .send({ email: 'maria@example.com', password: 'senha12345' })
+        .expect(200);
+
+      const cookie = (response.headers['set-cookie'] as string[])[0];
+      expect(cookie).toContain('HttpOnly');
+      expect(cookie).not.toContain('Max-Age');
+    });
+
+    it('restringe CORS à origem do frontend e permite credenciais', async () => {
+      const response = await request(app.getHttpServer())
+        .options('/api/auth/session/login')
+        .set('Origin', 'http://localhost:4200')
+        .set('Access-Control-Request-Method', 'POST')
+        .set('Access-Control-Request-Headers', 'content-type')
+        .expect(204);
+
+      expect(response.headers['access-control-allow-origin']).toBe(
+        'http://localhost:4200',
+      );
+      expect(response.headers['access-control-allow-credentials']).toBe(
+        'true',
+      );
+    });
+
     it('rejeita body com campos ausentes ou desconhecidos', async () => {
       await request(app.getHttpServer())
         .post('/api/auth/register')
@@ -199,6 +289,12 @@ describe('API (e2e)', () => {
 
       const response = await request(app.getHttpServer())
         .get('/api/documents')
+        .set('Authorization', `Bearer ${userToken}`)
+        .expect(200);
+
+      await request(app.getHttpServer())
+        .get('/api/documents')
+        .set('Cookie', 'certdocs_session=token-invalido')
         .set('Authorization', `Bearer ${userToken}`)
         .expect(200);
 

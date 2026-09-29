@@ -62,7 +62,16 @@ Ajustes de interface do CertDocs descritos em `requirements.md` e `design.md`.
   - _Commit: já incluído em `feat(web): cria as telas de documentos, cursos e certificados do aluno`_
   - _Requirements: 7.1_
 
-- [ ] 8. Checkpoint — Validação com o usuário
+- [x] 8. Visibilidade da senha e sessão lembrada
+  - Botão acessível para mostrar/ocultar senha no formulário de login
+  - Login de sessão web com cookie HttpOnly e atributos Secure/SameSite/Path
+  - Restaurar e encerrar sessão web por endpoints próprios; preservar login Bearer existente
+  - Restringir CORS à origem configurada com credenciais
+  - Bootstrap e interceptor Angular com cookie, sem persistir token em storage
+  - Testes unitários do formulário e e2e de cookie, restauração, logout e Bearer
+  - _Requirements: 8.1–8.9_
+
+- [ ] 9. Checkpoint — Validação com o usuário
   - Alternar Claro, Escuro e Automático no desktop e no celular; recarregar e conferir que o tema salvo não pisca
   - Conferir no DevTools (aba Network) que nenhuma requisição sai para outro domínio
   - Digitar no histórico e ver uma consulta só; limpar filtros
@@ -73,4 +82,4 @@ Ajustes de interface do CertDocs descritos em `requirements.md` e `design.md`.
 ## Notes
 
 - Instalar ou atualizar pacotes com o `nx serve web` rodando pode deixar o cache do Vite inconsistente (duas cópias de módulos do Material). Parar o servidor, apagar `.angular/cache` e subir de novo.
-- Esta spec não altera a API.
+- A tarefa 8 altera a API para oferecer sessão web por cookie HttpOnly, preservando o login Bearer para integrações.

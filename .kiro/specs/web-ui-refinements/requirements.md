@@ -112,3 +112,19 @@ Depende de:
 #### Acceptance Criteria
 
 1. WHEN cards são exibidos na mesma linha da grade em `/documentos`, `/cursos` ou `/meus-certificados`, THE Frontend SHALL posicionar as ações no rodapé de todos os cards da linha, independentemente do tamanho do título e da descrição.
+
+### Requirement 8: Visibilidade da senha e sessão lembrada
+
+**User Story:** Como usuário, quero conferir a senha digitada e escolher se a sessão continua depois que eu fechar a aba, para evitar erros de digitação e controlar a duração do meu acesso.
+
+#### Acceptance Criteria
+
+1. THE Login_Page SHALL exibir um botão no campo de senha que alterna entre texto oculto e visível sem alterar o valor digitado.
+2. THE botão de visibilidade SHALL informar sua ação por nome acessível atualizado ("Mostrar senha" ou "Ocultar senha") e não SHALL enviar o formulário.
+3. THE Login_Page SHALL oferecer a opção "Manter conectado", desmarcada por padrão.
+4. WHEN o login web tem sucesso, THE API SHALL enviar o JWT em cookie `HttpOnly`, `SameSite=Lax`, `Path=/api` e `Secure` em produção; THE Frontend SHALL NOT receber nem persistir o JWT em JavaScript-accessible storage.
+5. WHEN "Manter conectado" está desmarcada, THE API SHALL emitir cookie sem `Max-Age` ou `Expires`, limitado ainda pela expiração de 24 horas do JWT.
+6. WHEN "Manter conectado" está marcada, THE API SHALL emitir cookie persistente por no máximo 24 horas, igual à validade atual do JWT.
+7. WHEN a sessão web é restaurada, THE Frontend SHALL consultar a API; ao sair, SHALL solicitar a remoção do cookie. A rota de restauração SHALL validar o JWT no servidor.
+8. THE API SHALL continuar aceitando Bearer JWT em rotas protegidas para compatibilidade com integrações externas.
+9. THE API SHALL restringir CORS à origem configurada do frontend e permitir credenciais; SHALL NOT permitir origem curinga junto com credenciais. WHEN uma requisição que altera estado usa o cookie de sessão, THE API SHALL rejeitar origens diferentes da origem configurada.

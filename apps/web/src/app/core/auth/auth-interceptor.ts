@@ -12,10 +12,9 @@ import { AuthService } from './auth-service';
 export const LOGIN_ROUTE = '/entrar';
 
 /**
- * - Envia o token só para a própria API, nunca para outros domínios.
- * - Rotas de login, cadastro e verificação pública não recebem token.
- * - 401 numa rota protegida = sessão expirada ou inválida: sai e volta para o login.
- *   401 no login = senha errada: o erro segue para o formulário tratar.
+ * - Envia cookies só para a própria API, nunca para outros domínios.
+ * - O JWT HttpOnly não é lido nem copiado para um header Authorization.
+ * - 401 numa rota protegida encerra a sessão; rotas de autenticação tratam o 401 localmente.
  */
 export const authInterceptor: HttpInterceptorFn = (request, next) => {
   const auth = inject(AuthService);
@@ -25,12 +24,9 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
   const isPublicRoute = PUBLIC_API_PREFIXES.some((prefix) =>
     request.url.startsWith(prefix),
   );
-  const token = auth.token();
-
-  const authorized =
-    isApiRequest && !isPublicRoute && token
-      ? request.clone({ setHeaders: { Authorization: `Bearer ${token}` } })
-      : request;
+  const authorized = isApiRequest
+    ? request.clone({ withCredentials: true })
+    : request;
 
   return next(authorized).pipe(
     catchError((error: unknown) => {
@@ -38,7 +34,8 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
         error instanceof HttpErrorResponse &&
         error.status === HttpStatusCode.Unauthorized &&
         isApiRequest &&
-        !isPublicRoute;
+        !isPublicRoute &&
+        !request.url.includes('/auth/');
 
       if (sessionRejected) {
         auth.logout();
